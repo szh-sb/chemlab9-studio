@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#08131f" />
+<title>ChemLab 9 Studio v4.2 · 九年级 3D 化学虚拟实验室</title>
+<style>
+:root{--bg:#081522;--panel:#0e2030;--panel2:#12283b;--line:rgba(160,190,214,.15);--muted:#8ca5b9;--text:#e8f2fa;--cyan:#5ed5e8;--green:#65d6a6;--amber:#f2bd67;--red:#ff7777;--shadow:0 18px 50px rgba(0,0,0,.25)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}button,input{font:inherit}button{cursor:pointer;border:0;color:inherit}.app{height:100vh;display:flex;flex-direction:column;background:radial-gradient(circle at 55% -20%,#1b3d53 0,transparent 42%),var(--bg)}
+.topbar{height:66px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);background:rgba(6,18,29,.78);backdrop-filter:blur(16px);z-index:5}.brand{display:flex;align-items:center;gap:12px}.brandmark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#4bd0dc,#4a91c6);display:grid;place-items:center;color:#06202d;font-weight:900;font-size:19px;box-shadow:0 8px 22px #2bb5ca33}.brandname{font-weight:800;letter-spacing:.06em;font-size:15px}.brandname span{color:var(--cyan)}.subtitle{font-size:11px;color:var(--muted);margin-top:3px}.top-actions{display:flex;align-items:center;gap:9px}.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line);border-radius:99px;font-size:11px;color:#a8c2d4;background:#102437}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}.btn{border:1px solid var(--line);background:#142b3e;border-radius:10px;padding:9px 12px;font-size:12px;transition:.2s}.btn:hover{background:#1b3b52;border-color:#4b91ad}.btn.primary{background:linear-gradient(135deg,#39bccc,#328db9);color:#041d28;font-weight:800;border:0}.btn.primary:hover{filter:brightness(1.08)}.btn.danger{background:#3b2028;color:#ffb0b0;border-color:#733b47}.btn:disabled{opacity:.35;cursor:not-allowed}
+.main{display:grid;grid-template-columns:272px minmax(420px,1fr) 330px;gap:12px;padding:12px;min-height:0;flex:1}.panel{background:linear-gradient(180deg,rgba(18,40,59,.96),rgba(12,29,44,.96));border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);min-height:0;overflow:hidden}.leftpanel{display:flex;flex-direction:column}.panel-head{padding:15px 16px 12px;border-bottom:1px solid var(--line)}.eyebrow{font-size:10px;letter-spacing:.14em;color:var(--cyan);font-weight:800;text-transform:uppercase}.panel-title{font-size:16px;font-weight:800;margin-top:5px}.panel-desc{font-size:11px;color:var(--muted);line-height:1.55;margin-top:5px}.tabs{display:flex;gap:5px;padding:10px 12px 0}.tab{flex:1;background:transparent;color:var(--muted);border-radius:8px;padding:8px 6px;font-size:11px}.tab.active{background:#1a3a50;color:#dff9ff;border:1px solid #2c6074}.search{margin:10px 12px 8px;position:relative}.search input{width:100%;border-radius:9px;border:1px solid var(--line);background:#091a28;color:var(--text);padding:10px 12px 10px 32px;outline:none;font-size:11px}.search input:focus{border-color:#4ab9cb}.search span{position:absolute;left:11px;top:9px;color:#7795a9}.category-row{display:flex;gap:5px;overflow:auto;padding:0 12px 10px;scrollbar-width:none}.category-row::-webkit-scrollbar{display:none}.cat{white-space:nowrap;background:#0c1d2c;border:1px solid var(--line);color:#9db5c8;border-radius:99px;padding:6px 9px;font-size:10px}.cat.active{background:#1d4a5b;color:#c9f9ff;border-color:#2e8797}.inventory{padding:0 10px 12px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:start}.item-card{min-height:84px;border:1px solid var(--line);background:linear-gradient(145deg,#142c40,#102336);border-radius:11px;padding:9px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s;user-select:none}.item-card:hover{transform:translateY(-2px);border-color:#4a9caf;background:#18384d}.item-card.dragging{opacity:.45}.item-icon{font-size:23px;line-height:1}.item-name{font-size:11px;font-weight:700;margin-top:8px}.item-sub{font-size:9px;color:#809bae;margin-top:3px}.inventory-tip{margin:0 12px 12px;border-radius:9px;padding:9px 10px;background:#0b1d2b;border:1px dashed #31536a;color:#8daabd;font-size:10px;line-height:1.55}
+.stage-wrap{position:relative;min-width:0;min-height:0;overflow:hidden;border-radius:16px;border:1px solid rgba(125,183,209,.2);background:radial-gradient(ellipse at 50% 25%,#18374b,#091a28 75%);box-shadow:var(--shadow)}#stage{position:absolute;inset:0;width:100%;height:100%;display:block;outline:none}.stage-top{position:absolute;left:17px;top:15px;display:flex;gap:8px;align-items:center;pointer-events:none}.stage-label{padding:8px 11px;border:1px solid #ffffff18;background:#091a28bb;backdrop-filter:blur(10px);border-radius:9px;font-size:11px;font-weight:700}.stage-label small{color:var(--muted);font-weight:400;margin-left:6px}.stage-controls{position:absolute;right:14px;top:14px;display:flex;gap:6px}.iconbtn{width:34px;height:34px;border-radius:9px;background:#0b1d2bcc;border:1px solid #ffffff20;color:#c4d9e7;font-size:14px;backdrop-filter:blur(10px)}.iconbtn:hover{background:#1d4055}.stage-bottom{position:absolute;left:14px;right:14px;bottom:13px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}.hint{font-size:10px;color:#9ab1c3;background:#071723c9;border:1px solid #ffffff15;padding:8px 10px;border-radius:9px;backdrop-filter:blur(10px)}.selection-tools{display:none;gap:6px;pointer-events:auto}.selection-tools.show{display:flex}.stage-toast{position:absolute;top:62px;left:50%;transform:translateX(-50%);background:#173b50;border:1px solid #4c91a9;color:#dff9ff;border-radius:99px;padding:9px 15px;font-size:11px;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;z-index:3}.stage-toast.show{opacity:1;top:70px}
+.rightpanel{display:flex;flex-direction:column;overflow:auto}.experiment-head{padding:15px 16px 13px;border-bottom:1px solid var(--line)}.exp-kicker{font-size:10px;color:var(--cyan);font-weight:800;letter-spacing:.12em}.exp-title{font-size:17px;font-weight:800;margin:6px 0}.exp-meta{display:flex;gap:6px;flex-wrap:wrap}.tag{font-size:9px;color:#a9c7d8;background:#18374b;border:1px solid #2b5269;padding:4px 7px;border-radius:99px}.equation-card{margin:12px 13px 0;padding:12px;border-radius:12px;background:linear-gradient(135deg,#102b3d,#0b1e2d);border:1px solid #2b5265}.eq-label{font-size:9px;color:#83a9bc;letter-spacing:.12em;font-weight:800}.equation{font-family:Georgia,"Times New Roman",serif;font-size:18px;color:#e6fbff;margin:9px 0 5px;letter-spacing:.01em;white-space:nowrap}.eq-condition{text-align:center;font-size:10px;color:var(--amber);margin-top:-3px}.equation-note{font-size:10px;color:#8faabd;line-height:1.5;margin-top:8px}.progress-wrap{padding:13px 15px 10px}.progress-top{display:flex;justify-content:space-between;font-size:10px;color:#a8bfce}.progress-bar{height:5px;background:#071723;border-radius:99px;overflow:hidden;margin-top:8px}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#42c5d7,#65d6a6);border-radius:99px;transition:width .3s}.steps{padding:0 14px 10px;display:flex;flex-direction:column;gap:6px}.step{display:flex;gap:9px;align-items:center;padding:8px 9px;border-radius:9px;background:#0c1e2c;border:1px solid transparent;min-height:39px}.step.active{background:#153449;border-color:#2b6a7b}.step.done{opacity:.78}.step-num{width:21px;height:21px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;background:#1b3447;color:#8faec0;font-size:10px;font-weight:800}.step.active .step-num{background:#4ac5d5;color:#08212b}.step.done .step-num{background:#2f9b77;color:#eafff5}.step-text{font-size:10px;color:#c8dbe7}.step-sub{font-size:9px;color:#7f9aac;margin-top:2px}.step-copy{min-width:0;flex:1}.step-mark{font-size:10px;color:#63d4a1}.action-area{padding:10px 13px 13px;border-top:1px solid var(--line);margin-top:auto}.action-title{font-size:10px;color:#a6bfce;font-weight:800;margin-bottom:8px}.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.action-grid .btn{font-size:10px;padding:10px 7px}.action-grid .wide{grid-column:span 2}.status-card{margin:0 13px 12px;padding:10px;border-radius:10px;background:#0a1b29;border:1px solid var(--line)}.status-row{display:flex;justify-content:space-between;align-items:center;font-size:10px}.status-state{color:var(--amber);font-weight:700}.status-message{font-size:9px;color:#89a5b8;line-height:1.55;margin-top:6px}.score{font-variant-numeric:tabular-nums;color:#d8f9ff;font-weight:800}.footnote{font-size:9px;color:#6f8ca0;line-height:1.55;padding:0 14px 12px}
+
+.micro-toggle{font-size:10px;padding:8px 10px;background:#0b1d2bcc;border-color:#ffffff20;backdrop-filter:blur(10px)}
+.micro-overlay{position:absolute;z-index:4;inset:66px 14px 62px;display:none;flex-direction:column;gap:12px;padding:17px;border:1px solid #5ab5c9aa;border-radius:16px;background:linear-gradient(145deg,rgba(7,23,36,.97),rgba(14,42,59,.97));box-shadow:0 22px 60px #0009;overflow:auto;backdrop-filter:blur(14px)}
+.micro-overlay.show{display:flex}
+.micro-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.micro-head strong{display:block;font-size:15px;margin-top:4px}.micro-body{display:grid;grid-template-columns:1fr 48px 1.25fr;gap:8px;align-items:center;min-height:190px}.micro-molecules{border:1px solid #ffffff18;background:#10283a;border-radius:12px;padding:12px 8px;text-align:center;min-width:0;transition:opacity .35s,filter .35s}.micro-side-title{font-size:11px;font-weight:800;color:#dff6ff;line-height:1.5;min-height:32px}.micro-molecules svg{width:100%;height:auto;max-height:145px;overflow:visible}.micro-molecules svg line{stroke:#8aa8b8;stroke-width:2.2;stroke-linecap:round}.atom{stroke:#d9f1fa;stroke-width:1.2}.atom.k{fill:#8d72d8}.atom.mn{fill:#657a90}.atom.oxygen{fill:#e87979}.micro-caption{font-size:9px;color:#8caabd;margin-top:3px}.micro-arrow{display:flex;flex-direction:column;align-items:center;gap:8px;color:#f2bd67}.micro-arrow span{font-size:10px}.micro-arrow b{font-size:30px;font-weight:400}.atom-balance{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;padding:10px;border:1px solid #ffffff16;background:#0b1d2c;border-radius:10px;font-size:10px;color:#b9d0df}.atom-balance span{display:flex;align-items:center;gap:6px}.legend-dot{display:inline-block;width:9px;height:9px;border-radius:50%}.k-dot{background:#8d72d8}.mn-dot{background:#657a90}.o-dot{background:#e87979}.micro-progress-row{display:flex;justify-content:space-between;font-size:10px;color:#9bb5c8}.micro-progress-row strong{color:#e1f8ff}.micro-progress{height:6px;background:#071723;border-radius:99px;overflow:hidden}.micro-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8d72d8,#5ed5e8,#65d6a6);transition:width .2s;border-radius:99px}.micro-note{font-size:9px;line-height:1.6;color:#819eb2;margin:0}
+@media(max-width:850px){.micro-overlay{inset:60px 8px 58px;padding:12px}.micro-body{grid-template-columns:1fr 28px 1.15fr;gap:4px}.micro-molecules{padding:8px 4px}.micro-side-title{font-size:9px}.micro-arrow b{font-size:22px}.atom-balance{gap:9px;font-size:9px}}
+.modal-backdrop{position:fixed;inset:0;background:#020a10b8;backdrop-filter:blur(8px);z-index:20;display:none;align-items:center;justify-content:center;padding:20px}.modal-backdrop.show{display:flex}.modal{width:min(420px,100%);border-radius:17px;background:linear-gradient(160deg,#18354a,#0b1d2c);border:1px solid #ffffff25;box-shadow:0 25px 90px #0009;padding:20px}.modal-icon{font-size:30px}.modal h2{font-size:17px;margin:10px 0 7px}.modal p{font-size:12px;color:#a8c0d0;line-height:1.7;margin:0 0 15px}.modal .btn{width:100%}.warning-strip{display:none;margin:0 13px 10px;padding:9px 10px;border-radius:9px;background:#3a2227;border:1px solid #75414a;color:#ffb6b6;font-size:10px;line-height:1.5}.warning-strip.show{display:block}
+
+.library-backdrop{position:fixed;inset:0;background:#020a10d9;backdrop-filter:blur(9px);z-index:30;display:none;align-items:center;justify-content:center;padding:20px}.library-backdrop.show{display:flex}.library-modal{width:min(1040px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;border-radius:18px;background:linear-gradient(160deg,#17354a,#091a28);border:1px solid #ffffff24;box-shadow:0 25px 100px #000b}.library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 22px 15px;border-bottom:1px solid var(--line)}.library-title{font-size:21px;font-weight:850;margin-top:5px}.library-subtitle{font-size:11px;color:#91aabd;line-height:1.6;margin-top:6px}.library-toolbar{display:flex;align-items:center;gap:12px;padding:14px 20px 9px}.library-toolbar input{flex:1;min-width:0;border-radius:10px;border:1px solid var(--line);background:#091a28;color:var(--text);padding:11px 13px;outline:none;font-size:12px}.library-toolbar input:focus{border-color:#4ab9cb}.library-count{white-space:nowrap;font-size:10px;color:#9bb5c8}.library-filters{display:flex;gap:7px;overflow:auto;padding:0 20px 12px;scrollbar-width:none}.library-filter{white-space:nowrap;background:#0c1d2c;border:1px solid var(--line);color:#9db5c8;border-radius:99px;padding:7px 11px;font-size:10px}.library-filter.active{background:#1d4a5b;color:#c9f9ff;border-color:#2e8797}.equation-list{padding:0 20px 16px;overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start}.library-card{background:linear-gradient(145deg,#122b3f,#0d2030);border:1px solid #ffffff17;border-radius:13px;padding:13px;display:flex;flex-direction:column;gap:8px;min-width:0}.library-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.library-card-title{font-size:12px;font-weight:800;color:#e4f5fc}.library-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.library-tag{font-size:9px;color:#a6c4d4;background:#1a374a;border:1px solid #2c5063;padding:3px 7px;border-radius:99px}.library-tag.live{color:#a8f0d1;background:#153b36;border-color:#28685b}.library-equation{font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.5;color:#f1fbff;overflow-wrap:anywhere}.library-detail{font-size:10px;line-height:1.6;color:#9bb3c4}.library-detail b{color:#cfe3ee;font-weight:700}.library-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}.library-card-bottom .btn{font-size:10px;padding:7px 9px}.library-foot{padding:10px 20px 14px;border-top:1px solid var(--line);font-size:9px;line-height:1.55;color:#718da1}.library-empty{grid-column:1/-1;text-align:center;padding:35px 15px;color:#8faabd;font-size:12px}@media(max-width:680px){.library-backdrop{padding:7px}.library-modal{width:100%;max-height:94vh}.library-head{padding:15px}.library-title{font-size:18px}.library-toolbar{padding:11px 13px 8px}.library-filters{padding:0 13px 10px}.equation-list{grid-template-columns:1fr;padding:0 13px 13px}.library-foot{padding:9px 13px 12px}.library-count{font-size:9px}}
+
+@media(max-width:1120px){.main{grid-template-columns:235px minmax(300px,1fr) 300px;gap:8px;padding:8px}.topbar{padding:0 14px}.inventory{grid-template-columns:1fr 1fr}}
+@media(max-width:850px){html,body{overflow:auto}.app{height:auto;min-height:100vh}.topbar{position:sticky;top:0}.main{display:flex;flex-direction:column;height:auto;min-height:calc(100vh - 66px)}.leftpanel{height:280px;flex-shrink:0}.inventory{grid-template-columns:repeat(4,minmax(95px,1fr))}.stage-wrap{height:56vh;min-height:390px;order:2}.rightpanel{order:3;max-height:none}.stage-wrap{flex-shrink:0}.subtitle{display:none}}
+@media(max-width:520px){.topbar{height:58px}.brandmark{width:31px;height:31px}.brandname{font-size:13px}.top-actions .pill{display:none}.main{padding:7px}.leftpanel{height:255px}.inventory{grid-template-columns:repeat(3,minmax(82px,1fr))}.item-card{min-height:73px;padding:7px}.item-icon{font-size:19px}.stage-wrap{height:430px;min-height:430px}.stage-bottom{align-items:start;flex-direction:column;gap:6px}.hint{font-size:9px}.equation{font-size:16px}}
+
+/* 360-degree camera and object rotation controls */
+.orbit-panel,.rotation-panel{position:absolute;z-index:6;display:none;background:rgba(7,22,34,.96);border:1px solid #4a8298;border-radius:13px;box-shadow:0 18px 48px #0009;backdrop-filter:blur(14px);padding:13px;color:#e8f5fb;pointer-events:auto}
+.orbit-panel.show,.rotation-panel.show{display:block}
+.orbit-panel{top:58px;right:14px;width:min(290px,calc(100% - 28px))}
+.rotation-panel{right:14px;bottom:62px;width:min(330px,calc(100% - 28px))}
+.control-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;font-size:12px;font-weight:800}
+.panel-close{width:25px;height:25px;border-radius:7px;background:#19384b;color:#cce8f3;border:1px solid #ffffff20}
+.range-line{display:grid;grid-template-columns:58px minmax(70px,1fr) 43px;gap:8px;align-items:center;margin:10px 0}
+.range-line label{font-size:10px;color:#a9c4d4}
+.range-line input[type=range]{width:100%;accent-color:#59cddd;cursor:pointer}
+.range-line output{font-size:10px;color:#e2fbff;text-align:right;font-variant-numeric:tabular-nums}
+.control-note{font-size:9px;color:#85a6b9;line-height:1.55;margin-top:8px}
+.rotation-target{font-size:10px;color:#8fdcea;background:#102d3e;border:1px solid #2b5b70;padding:7px 9px;border-radius:8px;margin-bottom:8px}
+.tube-tilt-box{margin-top:10px;padding:9px;border-radius:9px;background:#102a3b;border:1px solid #2b5368}
+.tube-tilt-title{font-size:10px;font-weight:800;color:#dff9ff}
+.tube-tilt-box .range-line{margin:8px 0 3px}
+.rotation-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+.rotation-footer .btn{font-size:10px;padding:7px 9px}
+.tube-angle-badge{padding:7px 10px;border-radius:9px;background:#0a2634d9;border:1px solid #4b9aaa;color:#bff6f2;font-size:10px;font-weight:800;backdrop-filter:blur(10px)}
+.stage-top{gap:8px;flex-wrap:wrap}
+#stage{touch-action:none;cursor:grab}#stage:active{cursor:grabbing}
+@media(max-width:520px){.orbit-panel{top:55px;right:8px}.rotation-panel{right:8px;bottom:78px}.range-line{grid-template-columns:48px minmax(65px,1fr) 38px}.tube-angle-badge{font-size:9px;padding:6px 8px}}
+
+
+.tube-angle-badge.ok{background:#123a30e8;border-color:#35c998;color:#c7ffeb}
+.tube-angle-badge.bad{background:#3b2925e8;border-color:#e7a165;color:#ffe1b2}
+.assembly-diagnostics{margin:12px 14px;padding:11px 12px;border-radius:11px;border:1px solid #31576b;background:#0a2332;color:#d9f2f7}
+.assembly-diag-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.assembly-diag-head b{font-size:12px}.assembly-diag-head small{font-size:10px;color:#a9c6d0;text-align:right}
+.assembly-check-list{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.assembly-check{font-size:10px;display:flex;align-items:center;gap:5px;min-width:0;padding:5px 6px;border:1px solid #315062;border-radius:6px;background:#102b3a}
+.assembly-check.pass{color:#b0f5dc;border-color:#256953}.assembly-check.fail{color:#ffd4b0;border-color:#765344}
+.assembly-check small{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.assembly-next{font-size:11px;line-height:1.5;color:#b4ced8;margin-top:9px}
+.rotation-footer{display:flex;flex-wrap:wrap;gap:7px}.rotation-footer .btn{flex:1 1 auto}
+
+
+/* ───────────────────────────────────────────────────────────
+   ChemLab 9 Studio v4 — premium teaching workspace redesign
+   Palette: deep ink / porcelain white / aqua / heated cobalt.
+   ─────────────────────────────────────────────────────────── */
+:root{--bg:#07121e;--panel:#0b2031;--panel2:#102b40;--line:rgba(135,181,202,.16);--muted:#8ca9bc;--text:#ebf7ff;--cyan:#59d6de;--green:#71e0ae;--amber:#ffcb85;--red:#ff8492;--shadow:0 22px 70px rgba(0,7,16,.3)}
+html,body{background:#07121e;letter-spacing:.005em}
+button:focus-visible,input:focus-visible{outline:2px solid #69e4e2;outline-offset:3px}
+button,.item-card{transition:transform .18s ease, background .18s ease, border .18s ease, box-shadow .18s ease, filter .18s ease}
+button:active:not(:disabled){transform:scale(.975)}
+.app{background:radial-gradient(ellipse at 48% -6%,#1a4759 0%,transparent 35%),radial-gradient(ellipse at 98% 75%,#0c233d 0%,transparent 48%),#07121e}
+.app::before{content:"";position:fixed;pointer-events:none;inset:0;background-image:radial-gradient(rgba(158,206,219,.14) .7px,transparent .7px);background-size:29px 29px;opacity:.17}
+.topbar{height:77px;padding:0 24px;background:linear-gradient(90deg,rgba(8,24,37,.96),rgba(12,29,43,.91));border-bottom:1px solid rgba(136,219,221,.18);box-shadow:0 8px 35px #02091333}
+.topbar::after{content:"";position:absolute;top:76px;left:25px;width:164px;height:1px;background:linear-gradient(90deg,#75f0e7,transparent)}
+.brandmark{width:44px;height:44px;border:1px solid rgba(185,255,254,.34);border-radius:14px;background:radial-gradient(circle at 29% 19%,#a8ffff88,transparent 54%),linear-gradient(145deg,#17586e,#183448);box-shadow:inset 0 1px rgba(255,255,255,.3),0 0 22px #49d3cf24;font-size:24px;color:#d6ffff}
+.brandname{font-size:19px;letter-spacing:.115em;font-weight:850;color:#f2fdff}.brandname span{color:#78e7e5}.subtitle{color:#8caebc;font-size:11px;letter-spacing:.03em}
+.pill{background:#0f2c3ab8;border-color:#285265;border-radius:100px;color:#bed9e3;padding:8px 12px}.dot{box-shadow:0 0 0 4px #62e2b218,0 0 12px #73eabe88}
+.top-actions>.pill:nth-child(2){color:#f1d5a1;border-color:#62513b;background:#2d292338}
+.btn{border-radius:10px;border-color:rgba(120,186,201,.2);background:linear-gradient(180deg,#1a394b,#122a3b);color:#d6eef6;box-shadow:inset 0 1px #ffffff09;font-weight:650}
+.btn:hover:not(:disabled){transform:translateY(-1px);background:linear-gradient(180deg,#21485b,#17394a);border-color:rgba(109,224,226,.5);box-shadow:0 5px 19px #02101966}
+.btn.primary{background:linear-gradient(116deg,#8cefe1,#45c2d0);color:#042a31;box-shadow:0 7px 22px #2de4d333}
+.btn.primary:hover:not(:disabled){background:linear-gradient(116deg,#b0fff0,#67deea);box-shadow:0 7px 24px #2de4d357}
+.btn.danger{color:#ffc4c3;border-color:#7a4851;background:linear-gradient(180deg,#482c39,#32222f)}
+.main{grid-template-columns:256px minmax(415px,1fr) 345px;gap:15px;padding:15px;position:relative}
+.panel{background:linear-gradient(180deg,rgba(14,35,50,.97),rgba(8,25,39,.98));border:1px solid rgba(128,183,202,.19);border-radius:19px;box-shadow:0 18px 56px #00000031,inset 0 1px #ffffff0c}
+.panel-head{padding:21px 18px 17px;border-bottom-color:#ffffff12;position:relative}
+.panel-head::before,.experiment-head::before{content:"";position:absolute;left:0;top:22px;height:42px;width:2px;background:linear-gradient(#7dfff0,#248db7);border-radius:5px}
+.eyebrow,.exp-kicker{font-size:10px;letter-spacing:.2em;color:#69dce5}
+.panel-title{font-size:19px;letter-spacing:.015em;margin-top:7px}
+.panel-desc{margin-top:7px;line-height:1.7;color:#87a9ba}
+.tabs{padding:14px 14px 0}.tab{font-weight:650;border:1px solid transparent}.tab.active{background:linear-gradient(#20506a,#183b50);border-color:#2c7182;box-shadow:inset 0 1px #ffffff15}
+.search{margin:13px 14px 12px}.search input{padding:11px 13px 11px 34px;border-radius:10px;background:#081b29;border-color:#285064}
+.category-row{padding:0 14px 14px}.cat{padding:7px 10px}.cat.active{background:#1b5059;color:#d8fffb;border-color:#3a9ba7}
+.inventory{padding:0 13px 13px;gap:10px}.item-card{min-height:116px;padding:11px;border-radius:14px;background:linear-gradient(150deg,rgba(30,63,80,.9),rgba(12,35,53,.96));border-color:rgba(137,194,208,.2);position:relative;overflow:hidden;cursor:grab}
+.item-card::before{content:"";position:absolute;inset:0 0 auto;height:47px;background:radial-gradient(ellipse at 42% 0%,#73e6eb12,transparent 80%);pointer-events:none}
+.item-card::after{content:"↗";position:absolute;top:8px;right:10px;font-size:12px;color:#729db07d;transition:.2s}
+.item-card:hover::after{color:#7ef1e8}.item-card:hover{transform:translateY(-3px);border-color:#58ccd4;box-shadow:0 14px 22px #0004;background:linear-gradient(145deg,#1f4b5c,#12374a)}
+.item-icon{height:44px;display:flex;align-items:center;justify-content:flex-start;color:#83e3e8}.equipment-svg{width:62px;height:44px;filter:drop-shadow(0 5px 6px #0006)}
+.item-name{font-size:11px;letter-spacing:.025em}.item-sub{font-size:9px;margin-top:5px}
+.inventory-tip{margin:2px 14px 15px;background:linear-gradient(125deg,#133746,#0c2837);border:1px solid #2e6570;border-left:3px solid #54d5ce;color:#a8cad2;padding:12px;line-height:1.7}
+.stage-wrap{border:1px solid rgba(115,223,230,.3);border-radius:19px;box-shadow:0 24px 70px #00121d77,0 0 40px #2aabb710 inset;overflow:hidden}
+.stage-wrap::before{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:linear-gradient(180deg,#a1f5ff04 0%,transparent 20%,transparent 67%,#00081799 100%)}
+.stage-wrap::after{content:"";position:absolute;z-index:1;pointer-events:none;inset:12px;border:1px solid #addfe610;border-radius:12px}
+.stage-top{z-index:2;left:20px;top:19px;max-width:calc(100% - 165px)}
+.stage-label{background:#071b2bdb;border:1px solid #4b87927a;padding:10px 13px;font-weight:800;box-shadow:0 8px 30px #0006;letter-spacing:.04em}.stage-label small{color:#88b4c1;font-size:9px}
+.stage-controls{z-index:3;right:18px;top:18px;align-items:center}.iconbtn,.micro-toggle{border:1px solid #47758788;background:#071d2cd9;box-shadow:0 5px 22px #0004}.iconbtn:hover{background:#245065}
+.stage-bottom{z-index:2;left:19px;right:19px;bottom:17px}.hint{background:#071b2bdd;padding:10px 12px;border:1px solid #527a8b55;border-radius:10px;max-width:85%;line-height:1.5}
+.tube-angle-badge{font-size:10px;background:#092938db;border-color:#39778b}
+.stage-toast{z-index:9;box-shadow:0 12px 30px #0008}
+.experiment-head{padding:22px 19px 18px;position:relative}
+.exp-title{font-size:22px;letter-spacing:.02em;margin:10px 0}.exp-meta{gap:5px}.tag{padding:5px 8px;border-radius:7px;background:#183847}
+.equation-card{margin:15px 15px 0;padding:16px;border-radius:13px;border:1px solid #386b79;background:radial-gradient(ellipse at 80% 10%,#315b693e,transparent 60%),linear-gradient(145deg,#143446,#0c2331);box-shadow:inset 0 1px #ffffff1a}
+.equation{font-size:18px;letter-spacing:0;margin:13px 0 8px;color:#fff9e9}.eq-label{color:#92d9d9}.equation-note{color:#a1c1ce;font-size:10px;line-height:1.8}
+.progress-wrap{padding:18px 18px 13px}.progress-top{font-size:11px}.progress-bar{height:7px;background:#041621;margin-top:10px;border:1px solid #ffffff0e}.progress-fill{background:linear-gradient(90deg,#3f9dbd,#69ebca);box-shadow:0 0 10px #61e8ca55}
+.steps{padding:0 17px 14px;gap:7px}.step{background:#0c2738;border:1px solid #ffffff0f;border-radius:10px;padding:9px 10px;position:relative;min-height:44px}
+.step.active{background:linear-gradient(100deg,#1c4a5c,#153847);border-color:#3e9ca7;box-shadow:0 0 0 1px #61d9d512 inset,0 8px 18px #02101b39}
+.step.done{opacity:.85;border-color:#28705388}.step-num{width:23px;height:23px;background:#17394a;color:#a1c4d0}.step.active .step-num{background:#79ecdc;color:#05323a;box-shadow:0 0 14px #62eada38}.step-text{font-size:11px;font-weight:700}.step-sub{font-size:9px;margin-top:4px;color:#91b1c1}
+.status-card,.assembly-diagnostics{background:linear-gradient(135deg,#0d2d3d,#0a2232);border-color:#315768;border-radius:13px;margin-left:15px;margin-right:15px;padding:13px}.status-state{color:#ffd394}
+.assembly-check{background:#0a2637;border-radius:8px}.assembly-check.pass{background:#103b353f}.assembly-check.fail{background:#47332737}
+.action-area{padding:16px 15px 17px;border-top-color:#ffffff17;background:linear-gradient(180deg,transparent,#04172675)}.action-title{font-size:11px;margin-bottom:12px;color:#dcf3f8}.action-grid{gap:9px}.action-grid .btn{font-size:11px;min-height:40px}.action-grid .btn.primary.wide{min-height:45px;font-size:12px;letter-spacing:.035em}
+.orbit-panel,.rotation-panel{background:linear-gradient(140deg,rgba(12,36,51,.98),rgba(7,24,37,.98));border-color:#417f8c;box-shadow:0 22px 55px #00101abf}
+.tube-angle-badge.ok{background:#123e35ee;border-color:#58c7a8}.tube-angle-badge.bad{background:#4e332aee}
+/* Flames are visual-only before the user starts the experiment. */
+.flame-preview{background:linear-gradient(140deg,#294966,#17354e)!important;border-color:#45779b!important;color:#e5f7ff!important}
+.flame-preview.active{background:linear-gradient(135deg,#143f77,#125d87)!important;border-color:#6dd6ff!important;box-shadow:0 0 0 1px #61c8f833 inset,0 0 22px #45baff36!important}
+.flame-preview .flame-glyph{font-size:14px;display:inline-block;vertical-align:-1px;margin-right:3px;color:#6ee5ff}
+.flame-hud{position:absolute;z-index:3;left:19px;top:91px;display:none;align-items:center;gap:11px;min-width:205px;max-width:calc(100% - 36px);padding:11px 12px;border-radius:11px;background:linear-gradient(110deg,#0a2542e8,#0b3345dd);border:1px solid #497c9ac7;box-shadow:0 10px 25px #0008;pointer-events:none;backdrop-filter:blur(12px)}
+.flame-hud.show{display:flex;animation:fadeflame .25s ease-out}.flame-hud-icon{height:27px;width:27px;border-radius:50%;background:radial-gradient(circle,#b2edff,#438bdd 50%,#174773 71%,#0b2346 76%);box-shadow:0 0 16px #52baff77;flex-shrink:0}
+.flame-hud strong{display:block;font-size:11px;color:#d8f9ff;letter-spacing:.02em}.flame-hud small{display:block;font-size:9px;color:#9cc6d7;margin-top:3px}
+@keyframes fadeflame{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.workspace-legend{position:absolute;z-index:2;right:21px;bottom:67px;display:flex;gap:7px;align-items:center;font-size:9px;letter-spacing:.06em;color:#9fc4d2;background:#071c2abb;border:1px solid #486c7d77;padding:7px 9px;border-radius:9px;pointer-events:none}
+.legend-tick{height:7px;width:7px;border-radius:50%;background:#73ddc9;box-shadow:0 0 10px #62f5cd7b}
+.equipment-svg path,.equipment-svg line,.equipment-svg polyline,.equipment-svg circle,.equipment-svg ellipse,.equipment-svg rect{vector-effect:non-scaling-stroke}
+@media(max-width:1280px){.main{grid-template-columns:235px minmax(340px,1fr) 320px;gap:9px;padding:9px}.topbar{padding:0 15px}.top-actions{gap:5px}.btn{padding:8px 10px}}
+@media(max-width:1030px){.top-actions>.pill:nth-child(2){display:none}.main{grid-template-columns:220px minmax(300px,1fr) 296px}}
+@media(max-width:850px){html,body{overflow:auto}.main{display:flex;flex-direction:column}.leftpanel{height:300px}.rightpanel{max-height:none}.stage-wrap{height:56vh;min-height:420px;order:2}.topbar{height:70px}.topbar::after{top:69px}.top-actions .pill{display:none}}
+@media(max-width:600px){.topbar{height:62px}.topbar::after{top:61px}.brandmark{width:34px;height:34px;font-size:18px}.brandname{font-size:15px}.top-actions .btn{font-size:10px;padding:8px 7px}.top-actions #downloadReport{display:none}.main{padding:7px}.leftpanel{height:285px}.inventory{grid-template-columns:repeat(3,minmax(82px,1fr))}.item-card{min-height:101px}.item-icon{height:38px}.equipment-svg{height:37px;width:52px}.stage-wrap{height:450px;min-height:450px}.stage-top{left:10px;top:11px;max-width:calc(100% - 22px)}.stage-label{padding:7px 9px;font-size:10px}.stage-label small{display:none}.stage-controls{right:10px;top:55px;gap:4px}.stage-controls .micro-toggle{font-size:9px;padding:6px}.stage-controls .iconbtn{height:29px;width:29px}.flame-hud{left:10px;top:103px;padding:8px 9px;min-width:180px}.stage-bottom{left:10px;right:10px;bottom:10px}.hint{font-size:9px}.workspace-legend{display:none}.exp-title{font-size:19px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Viewport collision fixes from the actual desktop/mobile layout inspection. */
+@media(min-width:1101px){.stage-top{flex-direction:column;align-items:flex-start;max-width:calc(100% - 405px);gap:7px}.tube-angle-badge{max-width:100%}}
+@media(min-width:851px) and (max-width:1100px){.stage-top{flex-direction:column;align-items:flex-start;max-width:calc(100% - 28px);gap:6px}.stage-controls{top:110px;right:9px;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 18px)}.stage-controls .micro-toggle{font-size:9px;padding:7px}}
+@media(min-width:601px) and (max-width:850px){.stage-top{flex-direction:column;align-items:flex-start;max-width:calc(100% - 390px);gap:6px}}
+@media(max-width:600px){.leftpanel{height:337px}.stage-top{flex-direction:column;align-items:flex-start;gap:5px}.stage-controls{top:102px;max-width:calc(100% - 20px);flex-wrap:wrap;justify-content:flex-end}.flame-hud{top:147px}.inventory-tip{font-size:9px;padding:8px 9px}}
+
+/* v4.1 · three-dimensional material polish */
+.material-hud{position:absolute;top:59px;left:17px;z-index:2;display:flex;gap:6px;pointer-events:none;flex-wrap:wrap;max-width:55%}
+.material-tag{font-size:10px;font-weight:650;color:#c0e3ed;padding:6px 8px;border:1px solid rgba(122,207,232,.23);background:rgba(7,26,40,.69);backdrop-filter:blur(12px);border-radius:7px;box-shadow:0 6px 14px #00121b20}
+.material-tag i{display:inline-block;width:5px;height:5px;background:#68d4ed;border-radius:50%;margin-right:6px;box-shadow:0 0 7px #6bdfee}
+.quality-switch{font-size:10px;padding:8px 10px;background:#0b1d2bcc;border-color:#ffffff20;backdrop-filter:blur(10px)}
+.quality-switch[aria-pressed="false"]{color:#a8bcca}
+@media(max-width:1250px){.material-hud{top:103px;left:14px;max-width:65%}}
+@media(min-width:1101px) and (max-width:1350px){.stage-controls{top:80px;max-width:calc(100% - 22px);flex-wrap:wrap;justify-content:flex-end}.material-hud{top:174px;max-width:90%}}
+@media(max-width:1100px){.material-hud{display:none}}
+@media(max-width:680px){.quality-switch{padding:6px 7px;font-size:9px}}
+
+/* v4.2 · observable reaction state: teaching dashboard + visual feedback */
+.reaction-monitor{position:relative;margin:12px 15px 0;padding:13px 14px 12px;border:1px solid #386279;border-radius:13px;background:radial-gradient(circle at 100% 0%,rgba(32,128,159,.19),transparent 56%),linear-gradient(135deg,#0b2535,#0b1c2c);box-shadow:inset 0 1px #ffffff0c}
+.monitor-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}.monitor-header strong{font-size:11px;color:#dff7ff;letter-spacing:.03em}.monitor-header small{font-size:9px;color:#8cabbc}.monitor-live{display:inline-flex;align-items:center;gap:5px}.monitor-live::before{content:"";height:6px;width:6px;border-radius:50%;background:#728d9e}.reaction-monitor.running .monitor-live::before{background:#78efc2;box-shadow:0 0 10px #70e5b1;animation:pulse-led 1.4s infinite}@keyframes pulse-led{50%{opacity:.42}}
+.monitor-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.monitor-reading{border:1px solid #36607675;background:#061d2cc9;border-radius:9px;padding:10px 11px;min-width:0}.monitor-reading span{display:block;font-size:9px;color:#92b2c2}.monitor-reading b{display:block;font-size:17px;color:#edfdff;margin-top:6px;font-variant-numeric:tabular-nums}.monitor-reading .highlight{color:#7fe8d1}.monitor-gauge{height:6px;border-radius:99px;background:#061824;overflow:hidden;margin-top:10px}.monitor-gauge i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4e8bbe,#5fd3ee,#7aebc4);border-radius:99px;box-shadow:0 0 13px #4dcdeb55;transition:width .2s linear}
+.monitor-observation{margin:10px 0 8px;border-left:2px solid #51b1be;background:#112c3c81;padding:8px 9px;color:#bed8e3;font-size:10px;line-height:1.6;min-height:49px}
+.monitor-footer{display:flex;justify-content:space-between;align-items:center;gap:7px;flex-wrap:wrap}.monitor-footer small{color:#7a9bad;font-size:9px}.speed-control{border:1px solid #4e8394;background:#143a4e;color:#c6f3ff;padding:6px 9px;border-radius:7px;font-size:10px;font-weight:700}.speed-control:hover{background:#1e5065}.speed-control:focus-visible{outline:2px solid #74e3ee;outline-offset:2px}
+@media(max-width:1030px){.reaction-monitor{padding:12px 10px;margin:10px 11px 0}.monitor-reading b{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.reaction-monitor.running .monitor-live::before{animation:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandmark" aria-hidden="true">⚗</div>
+      <div><div class="brandname">CHEM<span>LAB</span> 9 <span style="font-size:9px;letter-spacing:.13em;color:#9ec8d1;vertical-align:4px">STUDIO</span></div><div class="subtitle">人教版 2024 · 九年级化学虚拟实验室</div></div>
+    </div>
+    <div class="top-actions">
+      <div class="pill"><i class="dot"></i><span id="engineStatus">3D 引擎初始化中 · v4.2</span></div>
+      <div class="pill">◈ 教学模式 · 实验 01</div>
+      <button class="btn" id="openEquationLibrary">☷ 方程式库</button>
+      <button class="btn" id="downloadReport">⇩ 实验报告</button>
+      <button class="btn" id="resetAll">↺ 重置实验</button>
+    </div>
+  </header>
+  <main class="main">
+    <aside class="panel leftpanel">
+      <div class="panel-head"><div class="eyebrow">EQUIPMENT LIBRARY</div><div class="panel-title">实验器材仓库</div><div class="panel-desc">单击器材放置到推荐位置，或将器材卡片拖入3D实验台。</div></div>
+      <div class="tabs"><button class="tab active" data-tab="all">全部器材</button><button class="tab" data-tab="core">核心器材</button><button class="tab" data-tab="extra">辅助器材</button></div>
+      <div class="search"><span>⌕</span><input id="searchInput" placeholder="搜索器材名称…" /></div>
+      <div class="category-row"><button class="cat active" data-cat="all">全部</button><button class="cat" data-cat="support">支撑</button><button class="cat" data-cat="glass">玻璃仪器</button><button class="cat" data-cat="heat">加热</button><button class="cat" data-cat="other">其他</button></div>
+      <div class="inventory" id="inventory"></div>
+      <div class="inventory-tip">✦ 操作提示：拖动器材可调整位置；选中器材后点击「360°调整角度」，可分别调整 X / Y / Z 三轴角度。空白处拖动可环绕观察实验台。</div>
+    </aside>
+
+    <section class="stage-wrap" id="stageWrap">
+      <canvas id="stage"></canvas>
+      <div class="stage-top"><div class="stage-label">实验操作台 <small>3D WORKSPACE · 360°自由视角</small></div><div class="tube-angle-badge" id="tubeTiltBadge">未放置试管 · 推荐向下倾斜约 10°</div></div>
+      <section class="micro-overlay" id="microOverlay" aria-hidden="true">
+        <header class="micro-head"><div><div class="eyebrow">PARTICLE VIEW</div><strong>微观粒子视角 · 原子重新组合</strong></div><button class="iconbtn" id="closeMicro" aria-label="关闭微观视角">✕</button></header>
+        <div class="micro-body">
+          <div class="micro-molecules reactants" id="microReactants">
+            <div class="micro-side-title">反应物 · 2KMnO₄</div>
+            <svg viewBox="0 0 300 142" role="img" aria-label="两个高锰酸钾粒子示意图">
+              <g transform="translate(76 69)"><line x1="0" y1="0" x2="-30" y2="-25"/><line x1="0" y1="0" x2="30" y2="-25"/><line x1="0" y1="0" x2="-30" y2="25"/><line x1="0" y1="0" x2="30" y2="25"/><circle class="atom mn" r="15"/><circle class="atom k" cx="-45" cy="0" r="11"/><circle class="atom oxygen" cx="-30" cy="-25" r="8"/><circle class="atom oxygen" cx="30" cy="-25" r="8"/><circle class="atom oxygen" cx="-30" cy="25" r="8"/><circle class="atom oxygen" cx="30" cy="25" r="8"/></g>
+              <g transform="translate(224 69)"><line x1="0" y1="0" x2="-30" y2="-25"/><line x1="0" y1="0" x2="30" y2="-25"/><line x1="0" y1="0" x2="-30" y2="25"/><line x1="0" y1="0" x2="30" y2="25"/><circle class="atom mn" r="15"/><circle class="atom k" cx="-45" cy="0" r="11"/><circle class="atom oxygen" cx="-30" cy="-25" r="8"/><circle class="atom oxygen" cx="30" cy="-25" r="8"/><circle class="atom oxygen" cx="-30" cy="25" r="8"/><circle class="atom oxygen" cx="30" cy="25" r="8"/></g>
+            </svg>
+            <div class="micro-caption">每个粒子包含 K、Mn、O₄</div>
+          </div>
+          <div class="micro-arrow"><span>△ 加热</span><b>→</b></div>
+          <div class="micro-molecules products" id="microProducts">
+            <div class="micro-side-title">生成物 · K₂MnO₄ + MnO₂ + O₂</div>
+            <svg viewBox="0 0 390 142" role="img" aria-label="锰酸钾、二氧化锰和氧气粒子示意图">
+              <g transform="translate(68 69)"><line x1="0" y1="0" x2="-25" y2="-25"/><line x1="0" y1="0" x2="25" y2="-25"/><line x1="0" y1="0" x2="-25" y2="25"/><line x1="0" y1="0" x2="25" y2="25"/><circle class="atom mn" r="14"/><circle class="atom k" cx="-43" cy="0" r="10"/><circle class="atom k" cx="43" cy="0" r="10"/><circle class="atom oxygen" cx="-25" cy="-25" r="8"/><circle class="atom oxygen" cx="25" cy="-25" r="8"/><circle class="atom oxygen" cx="-25" cy="25" r="8"/><circle class="atom oxygen" cx="25" cy="25" r="8"/></g>
+              <g transform="translate(204 69)"><line x1="0" y1="0" x2="-22" y2="-22"/><line x1="0" y1="0" x2="22" y2="22"/><circle class="atom mn" r="14"/><circle class="atom oxygen" cx="-22" cy="-22" r="8"/><circle class="atom oxygen" cx="22" cy="22" r="8"/></g>
+              <g transform="translate(322 69)"><line x1="-13" y1="0" x2="13" y2="0"/><circle class="atom oxygen" cx="-13" cy="0" r="10"/><circle class="atom oxygen" cx="13" cy="0" r="10"/></g>
+            </svg>
+            <div class="micro-caption">原子没有消失，只是重新组合</div>
+          </div>
+        </div>
+        <div class="atom-balance"><span><i class="legend-dot k-dot"></i>K：2 → 2</span><span><i class="legend-dot mn-dot"></i>Mn：2 → 2</span><span><i class="legend-dot o-dot"></i>O：8 → 8</span></div>
+        <div class="micro-progress-row"><span>反应进度</span><strong id="microProgressText">0%</strong></div><div class="micro-progress"><i id="microProgressFill"></i></div>
+        <p class="micro-note">粒子图为原子数守恒的示意模型，并非真实分子空间结构或反应动力学模拟。反应前后 K、Mn、O 三种原子的种类与数目保持不变。</p>
+      </section>
+      <div class="material-hud" aria-label="实验室视觉功能"><span class="material-tag"><i></i>玻璃高光质感</span><span class="material-tag"><i></i>动态水面</span><span class="material-tag"><i></i>金属高光</span></div>
+      <div class="stage-controls"><button class="btn quality-switch" id="qualitySwitch" aria-pressed="true" title="切换精细材质或省电模式">◇ 精细画质</button><button class="btn micro-toggle flame-preview" id="previewFlame" title="预览酒精灯火焰，不计入实验步骤" aria-pressed="false"><span class="flame-glyph">✦</span> 预览火焰</button><button class="btn micro-toggle" id="toggleMicro">⚛ 微观粒子</button><button class="btn micro-toggle" id="orbitToggle" title="打开360度视角控制">◎ 360°视角</button><button class="iconbtn" id="cameraHome" title="重置视角">⌂</button><button class="iconbtn" id="zoomIn" title="放大">＋</button><button class="iconbtn" id="zoomOut" title="缩小">－</button></div>
+      <div class="orbit-panel" id="orbitPanel">
+        <div class="control-panel-head"><span>360°视角控制</span><button class="panel-close" id="closeOrbit" aria-label="关闭视角控制">✕</button></div>
+        <div class="range-line"><label for="orbitAzimuth">水平环绕</label><input id="orbitAzimuth" type="range" min="0" max="360" step="1" value="31"><output id="orbitAzimuthValue">31°</output></div>
+        <div class="range-line"><label for="orbitElevation">上下俯仰</label><input id="orbitElevation" type="range" min="10" max="75" step="1" value="30"><output id="orbitElevationValue">30°</output></div>
+        <div class="control-note">水平角度可完整环绕 0–360°；上下俯仰可从低角度观察到俯视。也可以直接在实验台空白处按住鼠标左键拖动旋转视角，右键拖动同样有效。</div>
+      </div>
+      <div class="flame-hud" id="flameHud" aria-live="polite"><span class="flame-hud-icon"></span><div><strong id="flameHudTitle">酒精灯 · 火焰观察</strong><small id="flameHudDesc">模拟蓝色外焰、内焰与动态照明</small></div></div><div class="stage-toast" id="toast"></div>
+      <div class="workspace-legend"><i class="legend-tick"></i> LAB / LIVE VIEW · WEBGL</div><div class="stage-bottom"><div class="hint">空白处左键拖动：360°旋转视角　·　拖动器材：移动　·　滚轮：缩放</div><div class="selection-tools" id="selectionTools"><button class="btn" id="rotateItem">⟳ 360°调整角度</button><button class="btn danger" id="deleteItem">删除器材</button></div></div>
+      <div class="rotation-panel" id="rotationPanel">
+        <div class="control-panel-head"><span>器材 360° 旋转控制</span><button class="panel-close" id="closeRotation" aria-label="关闭旋转控制">✕</button></div>
+        <div class="rotation-target" id="rotationTarget">当前器材：未选择</div>
+        <div class="range-line"><label for="rotX">X 轴旋转</label><input id="rotX" type="range" min="0" max="360" step="1" value="0"><output id="rotXValue">0°</output></div>
+        <div class="range-line"><label for="rotY">Y 轴旋转</label><input id="rotY" type="range" min="0" max="360" step="1" value="0"><output id="rotYValue">0°</output></div>
+        <div class="range-line"><label for="rotZ">Z 轴旋转</label><input id="rotZ" type="range" min="0" max="360" step="1" value="260"><output id="rotZValue">260°</output></div>
+        <div class="tube-tilt-box" id="tubeTiltControl">
+          <div class="tube-tilt-title">试管专用 · 管口向下倾斜角</div>
+          <div class="range-line"><label for="tubeTilt">下倾角度</label><input id="tubeTilt" type="range" min="0" max="30" step="1" value="10"><output id="tubeTiltValue">10°</output></div>
+          <div class="control-note">标准教学位置为 10°：试管口略低于试管底部。拖动滑块会精确设置管口实际下倾角；X/Y/Z 仍可自由旋转。页面将根据真实姿态校验，不再仅判断 Z 轴。</div>
+        </div>
+        <div class="rotation-footer"><button class="btn" id="rotationReset">恢复标准角度</button><button class="btn" id="alignTubeConnections">对齐试管口连接</button><button class="btn primary" id="confirmTubeAngle">✓ 确认并检查装置</button></div>
+      </div>
+    </section>
+
+    <aside class="panel rightpanel">
+      <div class="experiment-head"><div class="exp-kicker">EXPERIMENT 01 / OXYGEN</div><div class="exp-title">高锰酸钾制取氧气</div><div class="exp-meta"><span class="tag">人教版 2024 · 九上</span><span class="tag">第二单元 · 课题3</span><span class="tag">分解反应</span></div></div>
+      <div class="equation-card"><div class="eq-label">CHEMICAL EQUATION · 化学方程式</div><div class="equation">2KMnO₄ <span style="color:#f2bd67">→</span> K₂MnO₄ + MnO₂ + O₂↑</div><div class="eq-condition">△ 加热</div><div class="equation-note">高锰酸钾受热分解，生成锰酸钾、二氧化锰和氧气。观察紫黑色固体变化、导管气泡、排水集气及氧气的助燃性。</div></div>
+<section class="reaction-monitor" id="reactionMonitor" aria-label="反应动态监测面板">
+        <div class="monitor-header"><strong>◈ 动态实验观察</strong><small class="monitor-live" id="reactionMonitorPhase">准备中</small></div>
+        <div class="monitor-grid">
+          <div class="monitor-reading"><span>虚拟反应时间</span><b id="reactionElapsedText">00:00</b></div>
+          <div class="monitor-reading"><span>相对集气进度</span><b class="highlight" id="reactionGasText">0%</b></div>
+        </div>
+        <div class="monitor-gauge" role="progressbar" aria-label="虚拟氧气收集进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="reactionGasGauge"><i id="reactionGasFill"></i></div>
+        <div class="monitor-observation" id="reactionObservation" aria-live="polite">装置就绪后，检查气密性并加入高锰酸钾；加热时观察固体、气泡和瓶内水位的同步变化。</div>
+        <div class="monitor-footer"><small>定性演示 · 不代表实际温度或气体体积</small><button type="button" class="speed-control" id="reactionSpeed" title="仅改变虚拟演示播放速度" aria-label="演示速度 1倍">⏱ 1× 演示速度</button></div>
+      </section>
+      <div class="progress-wrap"><div class="progress-top"><span>实验完成进度</span><span id="progressText">0 / 8 步</span></div><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+      <div class="steps" id="steps"></div>
+      <div class="warning-strip" id="warningStrip"></div>
+      <div class="status-card"><div class="status-row"><span>当前状态</span><span class="status-state" id="statusState">等待组装</span></div><div class="status-row" style="margin-top:7px"><span>实验评分</span><span class="score" id="scoreText">0 / 100</span></div><div class="status-message" id="statusMessage">从器材库组装装置；也可一键载入示范，体验动态酒精灯火焰。</div></div>
+      <div class="assembly-diagnostics" id="assemblyDiagnostics"><div class="assembly-diag-head"><b>装置实时核验</b><small id="assemblySummary">放置器材后显示检查结果</small></div><div class="assembly-check-list" id="assemblyCheckList"></div><div class="assembly-next" id="assemblyNext">角度达标并不等于装置全部合格，需同时确认接口和收集装置。</div></div>
+      <div class="action-area"><div class="action-title">实验控制台 · 按步骤操作</div><div class="action-grid">
+        <button class="btn" id="loadDemo">✦ 一键布置示范装置</button>
+        <button class="btn" id="checkAssembly">✓ 检查装置</button>
+        <button class="btn" id="checkAir">◉ 检查气密性</button>
+        <button class="btn" id="addDrug">＋ 加入高锰酸钾</button>
+        <button class="btn primary wide" id="startReaction">▶ 开始加热制气</button>
+        <button class="btn" id="coverJar">▱ 盖片取出集气瓶</button>
+        <button class="btn" id="testOxygen">✧ 检验氧气</button>
+        <button class="btn" id="removeTube">⇧ 导管移出水面</button>
+        <button class="btn danger wide" id="extinguish">熄灭酒精灯 · 结束实验</button>
+      </div></div>
+      <div class="footnote">安全提示：本实验建议试管口略向下倾斜约 10°；加热前检查气密性；收集结束后先将导管移出水面，再熄灭酒精灯。虚拟事故仅用于识别风险，不能替代教师指导下的真实实验。</div>
+    </aside>
+  </main>
+</div>
+
+<div class="library-backdrop" id="equationBackdrop">
+  <section class="library-modal" role="dialog" aria-modal="true" aria-labelledby="equationLibraryTitle">
+    <header class="library-head">
+      <div><div class="eyebrow">CHEMICAL EQUATION LIBRARY</div><div class="library-title" id="equationLibraryTitle">九年级化学方程式库</div><div class="library-subtitle">按主题检索反应方程式、实验现象和常用器材；带有“可运行”标记的实验已接入3D模拟。</div></div>
+      <button class="iconbtn" id="closeEquationLibrary" aria-label="关闭方程式库">✕</button>
+    </header>
+    <div class="library-toolbar"><input id="equationSearch" placeholder="搜索物质、方程式、实验现象或器材…" /><span class="library-count" id="equationCount">0 条方程式</span></div>
+    <div class="library-filters" id="equationFilters"></div>
+    <div class="equation-list" id="equationList"></div>
+    <div class="library-foot">说明：这是九年级常见反应的学习索引，具体教学顺序和表述以学校使用的人教版教材及教师要求为准。当前仅高锰酸钾制氧实验可直接进入完整3D流程。</div>
+  </section>
+</div>
+<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal-icon" id="modalIcon">⚠️</div><h2 id="modalTitle">操作提示</h2><p id="modalText"></p><button class="btn primary" id="modalClose">我知道了</button></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js'"></script>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const TABLE_Y=.88;
+const equipment=[
+ {type:'stand',name:'铁架台',sub:'固定与支撑',icon:'🗜️',cat:'support',core:true},
+ {type:'testTube',name:'大试管',sub:'发生反应',icon:'🧪',cat:'glass',core:true},
+ {type:'alcoholLamp',name:'酒精灯',sub:'加热仪器',icon:'🔥',cat:'heat',core:true},
+ {type:'stopper',name:'带孔橡胶塞',sub:'密封与连接',icon:'🟤',cat:'other',core:true},
+ {type:'deliveryTube',name:'导气管',sub:'输送气体',icon:'〰️',cat:'glass',core:true},
+ {type:'trough',name:'水槽',sub:'排水集气',icon:'🫙',cat:'glass',core:true},
+ {type:'gasJar',name:'集气瓶',sub:'收集氧气',icon:'⚗️',cat:'glass',core:true},
+ {type:'cotton',name:'棉花',sub:'阻挡粉末进入导管',icon:'☁️',cat:'other',core:true},
+ {type:'glassPlate',name:'玻璃片',sub:'盖住集气瓶',icon:'◻️',cat:'glass',core:false},
+ {type:'splint',name:'带火星木条',sub:'检验氧气',icon:'✨',cat:'other',core:false},
+ {type:'spoon',name:'药匙',sub:'取用固体药品',icon:'🥄',cat:'other',core:false},
+ {type:'clamp',name:'试管夹',sub:'夹持试管',icon:'夹',cat:'support',core:false}
+];
+let activeTab='all',activeCat='all',searchTerm='';
+let scene,camera,renderer,raycaster,mouse,tablePlane,clock;
+let flamePreviewEnabled=false;
+let items=[],selected=null,dragging=null,dragOffset=null,cameraDragging=false,lastPointer={x:0,y:0},cameraTheta=.55,cameraPhi=1.05,cameraRadius=10,dragMoved=false;
+let reactionState='idle',reactionProgress=0,gasBubbles=[],bubbleTimer=0,jarWater=null,flame=null,solidPieces=[],demoLoaded=false,assemblyOK=false,airOK=false,drugLoaded=false,jarRemoved=false,tubeRemoved=false,oxygenTested=false,score=0,completedSteps=new Set(),reactionFailed=false;
+let bubbleCurve=null,toastTimer=null,airCheckBubbles=[],eventLog=[];
+let reactionElapsed=0,reactionSpeed=1,observationIndex=-1,monitorUpdateTimer=0,jarBubbles=[],jarBubbleTimer=0;
+const reactionObservations=[
+ {at:0,phase:'开始受热',message:'酒精灯加热试管底部，高锰酸钾仍以紫黑色颗粒为主。'},
+ {at:.12,phase:'开始分解',message:'试管内固体逐渐由紫黑色转为深绿、深褐色混合物，导管开始出现气泡。'},
+ {at:.37,phase:'持续生成氧气',message:'反应持续，氧气经过导气管进入倒置集气瓶，瓶内水面开始下降。'},
+ {at:.72,phase:'正在排水集气',message:'集气瓶上方的气体空间扩大；气泡上浮，水位逐渐下降。'},
+ {at:1,phase:'集气完成',message:'集气已达到本模拟设定进度。请在水下盖住瓶口，再取出集气瓶。'}
+];
+const defaultPositions={stand:[-2.5,TABLE_Y,0],testTube:[-1.5,2.02,0],alcoholLamp:[-2.0,TABLE_Y,.28],stopper:[-.78,1.89,0],deliveryTube:[0,TABLE_Y,0],trough:[2.2,TABLE_Y,0],gasJar:[2.68,TABLE_Y,0],cotton:[-.72,1.87,.03],glassPlate:[3.65,TABLE_Y,.8],splint:[3.5,TABLE_Y,-.9],spoon:[-3.5,TABLE_Y,-1],clamp:[-2.5,2.0,.35]};
+const stepInfo=[['组装实验装置','固定试管，连接导气管与排水集气装置'],['检查装置气密性','确认装置连接严密，避免气体泄漏'],['装入高锰酸钾','在试管中加入药品，管口放置棉花'],['加热并收集氧气','观察连续气泡，利用排水法收集氧气'],['盖片并取出集气瓶','在水下盖好玻璃片，将集气瓶取出并正放'],['检验氧气','将带火星木条伸入集气瓶，观察是否复燃'],['导管移出水面','先将导管从水槽中取出，防止倒吸'],['熄灭酒精灯','最后熄灭酒精灯，规范结束实验']];
+
+const reactionLibrary=[
+ {id:'kmno4',name:'高锰酸钾受热制取氧气',equation:'2KMnO₄ → K₂MnO₄ + MnO₂ + O₂↑',condition:'加热',category:'氧气的制取',type:'分解反应',phenomenon:'紫黑色固体受热后发生变化，生成绿色锰酸钾、黑色/棕黑色二氧化锰，并放出氧气。',apparatus:'大试管、铁架台、酒精灯、带孔橡胶塞、导气管、水槽、集气瓶、棉花、玻璃片、带火星木条。',safety:'试管口略向下倾斜；加热前检查气密性；结束时先移出导管，再熄灭酒精灯。',live:true},
+ {id:'kclo3',name:'氯酸钾制取氧气',equation:'2KClO₃ → 2KCl + 3O₂↑',condition:'MnO₂作催化剂、加热',category:'氧气的制取',type:'分解反应',phenomenon:'固体混合物受热，产生能使带火星木条复燃的气体。',apparatus:'试管、铁架台、酒精灯、导气管、水槽、集气瓶、药匙。',safety:'按教材要求控制药品用量和加热条件；实验装置必须保持畅通。',live:false},
+ {id:'h2o2',name:'过氧化氢分解制取氧气',equation:'2H₂O₂ → 2H₂O + O₂↑',condition:'MnO₂作催化剂',category:'氧气的制取',type:'分解反应',phenomenon:'加入二氧化锰后产生大量气泡，二氧化锰反应前后质量和化学性质不变。',apparatus:'锥形瓶、双孔橡胶塞、长颈漏斗/分液漏斗、导气管、集气瓶、二氧化锰。',safety:'注意控制过氧化氢溶液浓度和加入速度，避免液体冲出。',live:false},
+ {id:'caco3-hcl',name:'实验室制取二氧化碳',equation:'CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑',condition:'常温',category:'二氧化碳',type:'复分解反应',phenomenon:'块状石灰石表面产生气泡，生成的气体可使澄清石灰水变浑浊。',apparatus:'锥形瓶、长颈漏斗、双孔橡胶塞、导气管、集气瓶。',safety:'不使用稀硫酸代替稀盐酸；验满时燃着的木条放在集气瓶口。',live:false},
+ {id:'co2-lime',name:'二氧化碳使澄清石灰水变浑浊',equation:'CO₂ + Ca(OH)₂ → CaCO₃↓ + H₂O',condition:'常温',category:'二氧化碳',type:'复分解反应',phenomenon:'澄清石灰水变浑浊，生成白色碳酸钙沉淀。',apparatus:'试管/烧杯、导气管、澄清石灰水。',safety:'持续通入过量二氧化碳时，浑浊可能因生成可溶性碳酸氢钙而逐渐变澄清。',live:false},
+ {id:'co2-water',name:'二氧化碳与水反应',equation:'CO₂ + H₂O ⇌ H₂CO₃',condition:'常温',category:'二氧化碳',type:'化合反应（可逆）',phenomenon:'二氧化碳溶于水并与水反应生成碳酸，碳酸使紫色石蕊溶液变红。',apparatus:'集气瓶、软塑料瓶、烧杯、紫色石蕊溶液。',safety:'注意区分二氧化碳溶于水与生成碳酸两个过程。',live:false},
+ {id:'caco3-heat',name:'碳酸钙高温分解',equation:'CaCO₃ → CaO + CO₂↑',condition:'高温煅烧',category:'二氧化碳',type:'分解反应',phenomenon:'碳酸钙受热分解，生成氧化钙和二氧化碳。',apparatus:'耐高温坩埚/硬质玻璃管、加热装置、导气装置。',safety:'该反应需要较高温度，作为原理学习为主，不建议在普通课堂装置中随意尝试。',live:false},
+ {id:'cao-water',name:'生石灰与水反应',equation:'CaO + H₂O → Ca(OH)₂',condition:'常温',category:'二氧化碳',type:'化合反应',phenomenon:'生石灰与水反应放出大量热，生成氢氧化钙。',apparatus:'烧杯、玻璃棒、温度计、药匙。',safety:'反应放热明显，避免直接用手接触反应物和生成物。',live:false},
+ {id:'carbon',name:'碳在氧气中充分燃烧',equation:'C + O₂ → CO₂',condition:'点燃',category:'燃烧与氧气性质',type:'化合反应 / 氧化反应',phenomenon:'木炭在氧气中燃烧更旺，生成能使澄清石灰水变浑浊的二氧化碳。',apparatus:'燃烧匙、酒精灯、集气瓶、澄清石灰水。',safety:'燃烧匙应缓慢伸入集气瓶，避免碰撞瓶壁。',live:false},
+ {id:'sulfur',name:'硫在氧气中燃烧',equation:'S + O₂ → SO₂',condition:'点燃',category:'燃烧与氧气性质',type:'化合反应 / 氧化反应',phenomenon:'产生明亮蓝紫色火焰，生成有刺激性气味的二氧化硫。',apparatus:'燃烧匙、酒精灯、集气瓶。',safety:'二氧化硫有刺激性和毒性，必须在通风橱或符合规范的条件下演示。',live:false},
+ {id:'phosphorus',name:'红磷在氧气中燃烧',equation:'4P + 5O₂ → 2P₂O₅',condition:'点燃',category:'燃烧与氧气性质',type:'化合反应 / 氧化反应',phenomenon:'产生大量白烟，生成五氧化二磷固体。',apparatus:'燃烧匙、酒精灯、集气瓶。',safety:'白烟不可吸入；严格按教材实验装置和药品用量操作。',live:false},
+ {id:'iron',name:'铁丝在氧气中燃烧',equation:'3Fe + 2O₂ → Fe₃O₄',condition:'点燃',category:'燃烧与氧气性质',type:'化合反应 / 氧化反应',phenomenon:'铁丝剧烈燃烧，火星四射，生成黑色固体。',apparatus:'螺旋状细铁丝、坩埚钳、酒精灯、集气瓶、少量水或细沙。',safety:'集气瓶底部放少量水或细沙，防止高温熔融物炸裂瓶底。',live:false},
+ {id:'magnesium',name:'镁条燃烧',equation:'2Mg + O₂ → 2MgO',condition:'点燃',category:'燃烧与氧气性质',type:'化合反应 / 氧化反应',phenomenon:'镁条发出耀眼白光，生成白色氧化镁固体。',apparatus:'坩埚钳、酒精灯、石棉网/陶土网。',safety:'不要直视强光；避免吸入氧化镁烟尘。',live:false},
+ {id:'hydrogen',name:'氢气在氧气中燃烧',equation:'2H₂ + O₂ → 2H₂O',condition:'点燃',category:'燃烧与氧气性质',type:'化合反应',phenomenon:'氢气在氧气中燃烧生成水，反应放出热量。',apparatus:'气体发生与收集装置、干燥装置、点火装置。',safety:'氢气与空气混合可能发生爆炸，必须严格按教师指导和规范装置演示。',live:false},
+ {id:'cu-oxygen',name:'铜与氧气反应',equation:'2Cu + O₂ → 2CuO',condition:'加热',category:'金属与氧化物',type:'化合反应 / 氧化反应',phenomenon:'红色铜表面逐渐变黑，生成氧化铜。',apparatus:'铜片/铜丝、酒精灯、坩埚钳。',safety:'加热后的铜器材温度很高，冷却后再接触。',live:false},
+ {id:'carbon-cuo',name:'碳还原氧化铜',equation:'C + 2CuO → 2Cu + CO₂↑',condition:'高温',category:'金属与氧化物',type:'置换/氧化还原反应',phenomenon:'黑色氧化铜逐渐变为红色铜，生成的气体可使澄清石灰水变浑浊。',apparatus:'试管、酒精灯、铁架台、导气管、澄清石灰水。',safety:'实验需持续加热，结束时注意导管与液体的相对位置，防止倒吸。',live:false},
+ {id:'hydrogen-cuo',name:'氢气还原氧化铜',equation:'H₂ + CuO → Cu + H₂O',condition:'加热',category:'金属与氧化物',type:'置换/氧化还原反应',phenomenon:'黑色氧化铜变为红色铜，试管口附近可观察到水珠。',apparatus:'硬质玻璃管、铁架台、酒精灯、氢气发生与导气装置。',safety:'先检验氢气纯度；实验结束时按规范停止加热和通气。',live:false},
+ {id:'zinc-acid',name:'锌与稀盐酸反应',equation:'Zn + 2HCl → ZnCl₂ + H₂↑',condition:'常温',category:'金属与酸',type:'置换反应',phenomenon:'锌粒表面产生气泡，锌逐渐溶解，放出氢气。',apparatus:'试管、镊子、胶头滴管、稀盐酸。',safety:'稀盐酸有腐蚀性，避免接触皮肤和眼睛；氢气检验须远离发生装置。',live:false},
+ {id:'iron-cuso4',name:'铁与硫酸铜溶液反应',equation:'Fe + CuSO₄ → FeSO₄ + Cu',condition:'常温',category:'金属与酸',type:'置换反应',phenomenon:'铁钉表面出现红色物质，蓝色硫酸铜溶液逐渐变浅。',apparatus:'试管/烧杯、铁钉、镊子、硫酸铜溶液。',safety:'实验后妥善收集含铜废液，不直接倒入下水道。',live:false},
+ {id:'methane',name:'甲烷完全燃烧',equation:'CH₄ + 2O₂ → CO₂ + 2H₂O',condition:'点燃',category:'燃烧与氧气性质',type:'氧化反应',phenomenon:'甲烷燃烧产生蓝色火焰，生成二氧化碳和水。',apparatus:'燃气导管、燃烧器、干燥冷烧杯、澄清石灰水。',safety:'注意通风，防止燃气泄漏；点燃前按规范检查气密性。',live:false},
+ {id:'ethanol',name:'乙醇完全燃烧',equation:'C₂H₅OH + 3O₂ → 2CO₂ + 3H₂O',condition:'点燃',category:'燃烧与氧气性质',type:'氧化反应',phenomenon:'乙醇燃烧生成二氧化碳和水并放出热量。',apparatus:'酒精灯/蒸发皿、干燥冷烧杯、澄清石灰水。',safety:'酒精属于易燃液体，严禁向燃着的酒精灯内添加酒精。',live:false},
+ {id:'electrolysis',name:'水通电分解',equation:'2H₂O → 2H₂↑ + O₂↑',condition:'通直流电',category:'水与其他反应',type:'分解反应',phenomenon:'两极均有气泡产生，氢气体积约为氧气体积的两倍。',apparatus:'电解水器、直流电源、导线、试管。',safety:'使用低压直流电源，避免导线短路；检验气体时分开取样。',live:false},
+ {id:'co',name:'一氧化碳燃烧',equation:'2CO + O₂ → 2CO₂',condition:'点燃',category:'金属与氧化物',type:'化合反应 / 氧化反应',phenomenon:'一氧化碳燃烧生成二氧化碳并放出热量。',apparatus:'密闭/尾气处理装置、点火装置、石灰水。',safety:'一氧化碳有剧毒，必须使用密闭装置并处理尾气，不作为自由组装实验。',live:false},
+ {id:'co-cuo',name:'一氧化碳还原氧化铜',equation:'CO + CuO → Cu + CO₂',condition:'加热',category:'金属与氧化物',type:'氧化还原反应',phenomenon:'黑色氧化铜逐渐变为红色铜，同时生成二氧化碳。',apparatus:'硬质玻璃管、铁架台、酒精灯、一氧化碳气源、尾气处理装置。',safety:'一氧化碳有剧毒，必须密闭操作并进行尾气处理；不作为自由组装实验。',live:false}
+];
+
+
+let equationCategory='全部',equationSearch='';
+const equationCategories=['全部','氧气的制取','二氧化碳','燃烧与氧气性质','金属与氧化物','金属与酸','水与其他反应'];
+function openEquationLibrary(){equationCategory='全部';equationSearch='';$('equationSearch').value='';$('equationBackdrop').classList.add('show');buildEquationLibrary();}
+function closeEquationLibrary(){$('equationBackdrop').classList.remove('show');}
+function buildEquationLibrary(){const filters=$('equationFilters');filters.innerHTML='';equationCategories.forEach(cat=>{const b=document.createElement('button');b.className='library-filter'+(cat===equationCategory?' active':'');b.textContent=cat;b.addEventListener('click',()=>{equationCategory=cat;buildEquationLibrary();});filters.appendChild(b);});const q=equationSearch.trim().toLowerCase();const rows=reactionLibrary.filter(r=>(equationCategory==='全部'||r.category===equationCategory)&&(!q||[r.name,r.equation,r.condition,r.category,r.type,r.phenomenon,r.apparatus].join(' ').toLowerCase().includes(q)));$('equationCount').textContent=rows.length+' / '+reactionLibrary.length+' 条方程式';const root=$('equationList');root.innerHTML='';if(!rows.length){root.innerHTML='<div class="library-empty">没有找到匹配的方程式，试试其他关键词。</div>';return;}rows.forEach(r=>{const card=document.createElement('article');card.className='library-card';card.innerHTML=`<div class="library-card-top"><div><div class="library-card-title">${r.name}</div><div class="library-card-tags"><span class="library-tag">${r.category}</span><span class="library-tag">${r.type}</span>${r.live?(window.THREE?'<span class="library-tag live">可运行3D实验</span>':'<span class="library-tag">3D引擎未加载</span>'):'<span class="library-tag">资料已收录</span>'}</div></div></div><div class="library-equation">${r.equation}</div><div class="library-detail"><b>条件：</b>${r.condition}<br><b>实验现象：</b>${r.phenomenon}<br><b>常用器材：</b>${r.apparatus}<br><b>安全提示：</b>${r.safety}</div><div class="library-card-bottom"><span class="library-detail">${r.live?'已接入完整实验流程':'实验模拟待开发'}</span><button class="btn ${r.live&&window.THREE?'primary':''}" data-run="${r.id}" ${r.live&&!window.THREE?'disabled':''}>${r.live?(window.THREE?'进入3D实验':'3D引擎未加载'):'查看资料'}</button></div>`;root.appendChild(card);});}
+function launchLibraryExperiment(id){const item=reactionLibrary.find(r=>r.id===id);if(!item)return;if(!item.live){showModal('该实验正在排期开发',item.name+' 的方程式、现象和器材信息已收录，完整3D操作流程将在后续版本接入。','📚');return;}if(!window.THREE){showModal('3D引擎未加载','请连接网络并刷新页面，加载 Three.js 后即可进入该实验。','⚠️');return;}closeEquationLibrary();if(reactionState!=='idle'){showModal('请先重置当前实验','当前实验已有操作进度。请先点击右上角“重置实验”，再进入示范装置。','↺');return;}loadDemo();showToast('已载入高锰酸钾制氧示范装置');}
+function init(){
+ buildInventory();buildSteps();bindUI();
+ if(!window.THREE){$('engineStatus').textContent='3D 引擎未加载';$('stage').style.display='none';setStatus('3D引擎未加载','方程式库仍可使用；如需3D实验，请检查网络连接后刷新页面。');updateUI();updateReactionMonitor(true);disable3DControls();showModal('3D引擎未加载','本项目通过 CDN 加载 Three.js。当前可以使用方程式库；请连接网络并刷新页面以启用3D实验。','⚠️');return;}
+ try{init3D();$('engineStatus').textContent='3D 实验环境已就绪 · v4.2';loadDemo();setStatus('示范装置已就绪','已预置基础器材。先检查装置，或点击「重置实验」清空后自由组装。');updateUI();updateReactionMonitor(true);animate();}catch(err){$('engineStatus').textContent='3D 场景初始化失败';$('stage').style.display='none';setStatus('3D场景初始化失败','当前浏览器可能未启用 WebGL。方程式库仍可使用。');updateUI();disable3DControls();showModal('3D场景初始化失败','请尝试使用最新版 Edge 或 Chrome，并确认浏览器已启用硬件加速/WebGL。方程式库仍可正常使用。','⚠️');}
+}
+function disable3DControls(){['loadDemo','checkAssembly','checkAir','addDrug','startReaction','coverJar','testOxygen','removeTube','extinguish','rotateItem','deleteItem','cameraHome','zoomIn','zoomOut','orbitToggle','orbitAzimuth','orbitElevation','rotX','rotY','rotZ','tubeTilt','rotationReset','alignTubeConnections','confirmTubeAngle','previewFlame','qualitySwitch'].forEach(id=>{const el=$(id);if(el)el.disabled=true;});}
+
+
+const equipmentGlyphs={
+ stand:'<path d="M12 40h44v5H12zM30 40V5M29 7h4M29 17h28v3H29M51 19v12M47 31h9"/>',
+ testTube:'<path d="M24 5h23M28 5v29a9 9 0 0 0 18 0V5M28 25h18M32 10v11"/><path d="M30 29h14" stroke="#72d6fc"/>',
+ alcoholLamp:'<path d="M20 39h32M23 35c-3-4-3-14 0-18h26c4 6 4 13 0 18zM27 17V12h18v5M33 12V6h5v6M30 41h14"/><path d="M35 3c-4-5-2-9 0-11M39 4c4-5 3-8 1-11" stroke="#81e4ff"/>',
+ stopper:'<path d="M15 27l12-16 25 9-10 19zM24 15l20 7M38 24l8-15M46 10l5 2"/>',
+ deliveryTube:'<path d="M10 40V17Q10 9 18 9H33Q42 9 42 18V34Q42 40 48 40H59"/><path d="M12 39V17Q12 11 18 11H33Q40 11 40 18V34Q40 42 48 42h11" stroke="#65d4f6"/>',
+ trough:'<path d="M10 18h51l-5 25H16zM13 27q10-4 20 0t25 0M21 18V9h30v9"/>',
+ gasJar:'<path d="M25 6h23M27 7v30q0 5 10 5t10-5V7M28 25h18M28 29h18"/><path d="M29 32h16v7H29z" fill="#65baf144" stroke="none"/>',
+ cotton:'<path d="M20 30q-14-6-4-16Q20 4 29 12q8-15 17-1q13 0 11 11q8 13-7 18H24q-9 0-4-10z"/>',
+ glassPlate:'<path d="M10 28l21-13 31 11-22 14zM10 28v4l30 12 22-15v-3"/>',
+ splint:'<path d="M28 43l8-34 4 1-8 34zM40 7q-7-6-1-12 2 6 5 8q4 6-2 9" stroke="#8fdcff"/>',
+ spoon:'<path d="M15 34l34-19M51 11c8 2 8 10 3 14s-13 1-14-5 5-10 11-9"/>',
+ clamp:'<path d="M12 23h43M17 12v19M54 12v19M12 34h48"/>'
+};
+function equipmentGlyph(type,fallback){const markup=equipmentGlyphs[type];return markup?`<svg class="equipment-svg" viewBox="0 -5 72 56" fill="none" stroke="#9bdeea" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${markup}</svg>`:fallback;}
+
+function buildInventory(){const root=$('inventory');root.innerHTML='';equipment.filter(e=>{const tabOK=activeTab==='all'||(activeTab==='core'?e.core:!e.core);const catOK=activeCat==='all'||e.cat===activeCat;const q=(e.name+e.sub).toLowerCase().includes(searchTerm.toLowerCase());return tabOK&&catOK&&q;}).forEach(e=>{const el=document.createElement('div');el.className='item-card';el.draggable=!!window.THREE;el.dataset.type=e.type;el.innerHTML=`<div class="item-icon">${equipmentGlyph(e.type,e.icon)}</div><div><div class="item-name">${e.name}</div><div class="item-sub">${e.sub}</div></div>`;if(window.THREE){el.addEventListener('click',()=>addItem(e.type));el.addEventListener('dragstart',ev=>{el.classList.add('dragging');ev.dataTransfer.setData('text/plain',e.type);ev.dataTransfer.effectAllowed='copy';});el.addEventListener('dragend',()=>el.classList.remove('dragging'));}else{el.title='3D引擎加载后可放置器材';}root.appendChild(el);});}
+function buildSteps(){const root=$('steps');root.innerHTML='';stepInfo.forEach((s,i)=>{const el=document.createElement('div');el.className='step';el.id='step'+i;el.innerHTML=`<div class="step-num">${i+1}</div><div class="step-copy"><div class="step-text">${s[0]}</div><div class="step-sub">${s[1]}</div></div><div class="step-mark" id="stepMark${i}"></div>`;root.appendChild(el);});}
+function init3D(){
+ const canvas=$('stage');scene=new THREE.Scene();scene.background=new THREE.Color(0x091b29);scene.fog=new THREE.Fog(0x091b29,13,26);
+ camera=new THREE.PerspectiveCamera(42,1,.1,100);setCamera();
+ renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+ scene.add(new THREE.HemisphereLight(0xbfe7ff,0x172331,1.12));const key=new THREE.DirectionalLight(0xffedcf,2.0);key.position.set(-4,9,5);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);const fill=new THREE.PointLight(0x4cc8df,1.2,18);fill.position.set(4,5,-4);scene.add(fill);
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.MeshStandardMaterial({color:0x0b1d2a,roughness:.88}));floor.rotation.x=-Math.PI/2;floor.position.y=-.08;floor.receiveShadow=true;scene.add(floor);
+ makeLabTable();makeBackWall();addLabAtmosphere();raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();dragOffset=new THREE.Vector3();tablePlane=new THREE.Plane(new THREE.Vector3(0,1,0),-TABLE_Y);clock=new THREE.Clock();resize();window.addEventListener('resize',resize);
+ canvas.addEventListener('contextmenu',e=>e.preventDefault());canvas.addEventListener('pointerdown',onPointerDown);canvas.addEventListener('pointermove',onPointerMove);canvas.addEventListener('pointerup',onPointerUp);canvas.addEventListener('pointercancel',onPointerUp);canvas.addEventListener('wheel',onWheel,{passive:false});
+ canvas.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';});canvas.addEventListener('drop',e=>{e.preventDefault();const type=e.dataTransfer.getData('text/plain');if(type){const p=screenToTable(e.clientX,e.clientY);addItem(type,p);}});
+}
+function mat(color,roughness=.55,metalness=.05,extra={}){return new THREE.MeshStandardMaterial({color,roughness,metalness,...extra});}
+function addMesh(parent,geometry,material,pos=[0,0,0],rot=[0,0,0]){const m=new THREE.Mesh(geometry,material);m.position.set(...pos);m.rotation.set(...rot);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function makeCountertopTexture(){
+ const c=document.createElement('canvas');c.width=c.height=256;
+ const ctx=c.getContext('2d');const g=ctx.createLinearGradient(0,0,256,256);
+ g.addColorStop(0,'#acbdc8');g.addColorStop(.55,'#e1e8ea');g.addColorStop(1,'#a6b8c1');
+ ctx.fillStyle=g;ctx.fillRect(0,0,256,256);
+ let seed=18;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+ for(let i=0;i<3300;i++){const x=rand()*256,y=rand()*256;ctx.fillStyle=rand()>.5?'rgba(255,255,255,.045)':'rgba(1,25,36,.05)';ctx.fillRect(x,y,.5+rand()*2,.5+rand()*1.3);}
+ for(let y=5;y<256;y+=7){ctx.fillStyle='rgba(255,255,255,.055)';ctx.fillRect(0,y,256,.55);}
+ const tex=new THREE.CanvasTexture(c);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(5,3);tex.encoding=THREE.sRGBEncoding;return tex;
+}
+function makeLabTable(){
+ const group=new THREE.Group();scene.add(group);
+ const top=mat(0x415768,.56,.12,{map:makeCountertopTexture()});
+ addMesh(group,new THREE.BoxGeometry(9.28,.24,5.34),top,[0,TABLE_Y-.14,0]);
+ const rim=mat(0x728895,.25,.65);
+ addMesh(group,new THREE.BoxGeometry(9.42,.055,5.47),rim,[0,TABLE_Y-.025,0]);
+ addMesh(group,new THREE.BoxGeometry(9.25,.036,5.30),mat(0x213c4f,.4,.15),[0,TABLE_Y-.27,0]);
+ const leg=mat(0x273c4e,.36,.66);
+ for(const [x,z] of [[-4.22,-2.31],[4.22,-2.31],[-4.22,2.31],[4.22,2.31]]){
+  addMesh(group,new THREE.BoxGeometry(.22,1.02,.22),leg,[x,.34,z]);
+  addMesh(group,new THREE.BoxGeometry(.25,.045,.25),rim,[x,.84,z]);
+ }
+ addMesh(group,new THREE.BoxGeometry(8.88,.12,4.95),mat(0x162a37,.55,.37),[0,.30,0]).castShadow=false;
+ for(let i=0;i<8;i++){
+  const x=-3.72+i*.18;
+  const tick=addMesh(group,new THREE.BoxGeometry(.012,.004,i%5===0?.17:.09),new THREE.MeshBasicMaterial({color:0x86b6c9,transparent:true,opacity:.32}),[x,TABLE_Y+.036,-2.15]);tick.castShadow=false;
+ }
+ const grid=new THREE.GridHelper(8.85,18,0x5592a5,0x2c566b);grid.position.y=TABLE_Y+.045;grid.material.transparent=true;grid.material.opacity=.17;scene.add(grid);
+ const ring=new THREE.Mesh(new THREE.RingGeometry(2.85,2.875,80),new THREE.MeshBasicMaterial({color:0x72c9dc,transparent:true,opacity:.19,side:THREE.DoubleSide,depthWrite:false}));
+ ring.rotation.x=-Math.PI/2;ring.position.set(0,TABLE_Y+.048,0);scene.add(ring);
+}
+function makeBackWall(){const wall=new THREE.Mesh(new THREE.PlaneGeometry(18,9),mat(0x102637,.9));wall.position.set(0,4.2,-4.8);scene.add(wall);for(let i=0;i<5;i++){const line=new THREE.Mesh(new THREE.BoxGeometry(18,.012,.012),new THREE.MeshBasicMaterial({color:0x2a5368,transparent:true,opacity:.25}));line.position.set(0,1.3+i*1.35,-4.78);scene.add(line);}}
+
+function addLabAtmosphere(){
+ // A low-contrast room accent and light pool make real glass silhouettes legible.
+ const edgeMat=new THREE.MeshBasicMaterial({color:0x3b9faf,transparent:true,opacity:.17});
+ for(const x of [-5.2,5.2]){
+  const tube=new THREE.Mesh(new THREE.BoxGeometry(.032,3.3,.032),edgeMat);tube.position.set(x,2.1,-4.45);scene.add(tube);
+ }
+ const strip=new THREE.Mesh(new THREE.BoxGeometry(8.7,.035,.045),new THREE.MeshBasicMaterial({color:0x83dfe5,transparent:true,opacity:.26}));strip.position.set(0,3.55,-4.77);scene.add(strip);
+ const tableGlow=new THREE.PointLight(0x54d0de,.32,6);tableGlow.position.set(-2,2.9,2.15);scene.add(tableGlow);
+ const backGlow=new THREE.PointLight(0x347fbd,.28,6);backGlow.position.set(2.6,2.2,-3.2);scene.add(backGlow);
+}
+
+function makeGlass(opacity=.31){
+ return new THREE.MeshPhysicalMaterial({color:0xd8f5ff,metalness:0,roughness:.07,
+  transmission:.22,thickness:.055,transparent:true,opacity,clearcoat:1,clearcoatRoughness:.04,
+  side:THREE.DoubleSide,depthWrite:false});
+}
+function makeGlassHighlight(opacity=.3){return new THREE.MeshBasicMaterial({color:0xe9fbff,transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide});}
+function decorateStandRod(root,x,y,height){
+ const reflect=addMesh(root,new THREE.CylinderGeometry(.009,.009,height,10),new THREE.MeshBasicMaterial({color:0xd9f4ff,transparent:true,opacity:.55}),[x-.038,y,.029]);
+ reflect.castShadow=false;
+}
+function makeLiquidMaterial(color,opacity=.44){
+ return new THREE.MeshPhysicalMaterial({color,roughness:.13,metalness:.03,transparent:true,opacity,
+  clearcoat:.75,clearcoatRoughness:.09,side:THREE.DoubleSide,depthWrite:false});
+}
+function addLiquidSurface(root,width,depth,y){
+ const geo=new THREE.PlaneGeometry(width,depth,26,19);
+ const material=makeLiquidMaterial(0x3eafcf,.73);
+ const wave=new THREE.Mesh(geo,material);wave.rotation.x=-Math.PI/2;wave.position.y=y;wave.castShadow=false;wave.receiveShadow=true;wave.renderOrder=3;wave.userData.skipPicking=true;root.add(wave);
+ root.userData.waveSurface=wave;
+ const rimMat=new THREE.MeshBasicMaterial({color:0x8ae7f7,transparent:true,opacity:.27,depthWrite:false});
+ for(const z of [-depth/2+.035,depth/2-.035]){const l=addMesh(root,new THREE.BoxGeometry(width-.1,.009,.015),rimMat,[0,y+.011,z]);l.castShadow=false;l.userData.skipPicking=true;}
+ return wave;
+}
+function updateDeliveryTubeMesh(root,curve){
+ const mesh=root?.userData?.tubeMesh;if(!mesh)return;
+ const geo=new THREE.TubeGeometry(curve,110,.048,12,false);
+ mesh.geometry.dispose();mesh.geometry=geo;
+ const inner=root.userData.tubeHighlight;
+ if(inner){inner.geometry.dispose();inner.geometry=new THREE.TubeGeometry(curve,110,.019,8,false);}
+ root.userData.tubeCurve=curve;
+}
+function createItem(type){
+ const root=new THREE.Group();root.userData.isLabItem=true;root.userData.type=type;root.userData.name=equipment.find(e=>e.type===type)?.name||type;
+ const glass=makeGlass(),metal=mat(0x94adba,.19,.87),dark=mat(0x273843,.4,.61),rubber=mat(0x2b3439,.95),white=mat(0xf1f3ed,.85);
+ switch(type){
+ case 'stand':{
+  addMesh(root,new THREE.BoxGeometry(1.15,.14,.70),dark,[0,.08,0]);
+  addMesh(root,new THREE.BoxGeometry(1.08,.018,.63),mat(0x596b73,.29,.64),[0,.156,0]);
+  addMesh(root,new THREE.CylinderGeometry(.068,.068,2.58,32),metal,[0,1.43,0]);
+  decorateStandRod(root,0,1.43,2.51);
+  const cap=addMesh(root,new THREE.CylinderGeometry(.082,.082,.04,24),dark,[0,2.73,0]);cap.castShadow=false;
+  addMesh(root,new THREE.BoxGeometry(1.1,.07,.075),metal,[.55,1.20,0]);
+  addMesh(root,new THREE.BoxGeometry(.22,.22,.20),dark,[1.0,1.19,0]);
+  addMesh(root,new THREE.TorusGeometry(.205,.038,10,32),metal,[1.02,1.18,0],[Math.PI/2,0,0]);
+  addMesh(root,new THREE.CylinderGeometry(.05,.05,.13,18),mat(0x76838a,.23,.7),[1.04,1.07,.14]);
+  break;
+ }
+ case 'testTube':{
+  const body=addMesh(root,new THREE.CylinderGeometry(.155,.155,1.47,40,1,true),glass,[0,0,0]);
+  body.castShadow=false;
+  const bottom=addMesh(root,new THREE.SphereGeometry(.155,32,18,0,Math.PI*2,0,Math.PI/2),glass,[0,-.735,0],[Math.PI,0,0]);bottom.castShadow=false;
+  const lip=addMesh(root,new THREE.TorusGeometry(.157,.021,10,42),makeGlass(.62),[0,.738,0],[Math.PI/2,0,0]);lip.castShadow=false;
+  // Narrow curved white specular reflection strip on the glass wall.
+  const highlight=addMesh(root,new THREE.CylinderGeometry(.158,.158,1.36,40,1,true,Math.PI*.65,.13),makeGlassHighlight(.39),[0,-.01,0]);
+  highlight.castShadow=false;highlight.userData.skipPicking=true;highlight.renderOrder=4;
+  const blueBounce=addMesh(root,new THREE.CylinderGeometry(.1585,.1585,1.35,40,1,true,Math.PI*1.26,.065),new THREE.MeshBasicMaterial({color:0x76c8e7,transparent:true,opacity:.18,side:THREE.DoubleSide,depthWrite:false}),[0,-.01,0]);
+  blueBounce.castShadow=false;blueBounce.userData.skipPicking=true;
+  root.userData.body=body;root.userData.solidPieces=[];root.userData.drugLoaded=false;break;
+ }
+ case 'alcoholLamp':{
+  const profile=[[0,.075],[.28,.075],[.37,.12],[.4,.23],[.4,.42],[.35,.61],[.27,.70],[.19,.76],[.15,.79]];
+  const vessel=addMesh(root,new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(...v)),48),makeGlass(.34));vessel.castShadow=false;
+  addMesh(root,new THREE.CylinderGeometry(.36,.385,.09,48),mat(0x758793,.31,.68),[0,.12,0]);
+  const fuel=addMesh(root,new THREE.CylinderGeometry(.34,.36,.30,40),makeLiquidMaterial(0x3588ac,.40),[0,.32,0]);fuel.castShadow=false;
+  addMesh(root,new THREE.CylinderGeometry(.15,.15,.065,32),mat(0xa9b9c2,.21,.75),[0,.785,0]);
+  addMesh(root,new THREE.CylinderGeometry(.051,.059,.17,18),mat(0x31363b,.8,.04),[0,.83,0]);
+  const glint=addMesh(root,new THREE.CylinderGeometry(.398,.398,.30,44,1,true,Math.PI*.65,.10),makeGlassHighlight(.32),[0,.37,0]);glint.castShadow=false;glint.userData.skipPicking=true;
+  const f=makeAlcoholFlame();f.position.y=.925;f.visible=false;root.add(f);root.userData.flame=f;break;
+ }
+ case 'stopper':{
+  addMesh(root,new THREE.CylinderGeometry(.13,.18,.28,32),rubber,[0,0,0],[0,0,Math.PI/2]);
+  addMesh(root,new THREE.CylinderGeometry(.034,.034,.42,16),makeGlass(.68),[.19,0,0],[0,0,Math.PI/2]);break;
+ }
+ case 'deliveryTube':{
+  const pts=[new THREE.Vector3(-.78,1.02,0),new THREE.Vector3(-.45,1.08,0),new THREE.Vector3(-.08,1.08,0),new THREE.Vector3(.35,.98,0),new THREE.Vector3(.82,.75,0),new THREE.Vector3(1.35,.63,0),new THREE.Vector3(2.0,.63,0),new THREE.Vector3(2.35,.57,0),new THREE.Vector3(2.5,.45,0)];
+  const curve=new THREE.CatmullRomCurve3(pts);
+  const outer=addMesh(root,new THREE.TubeGeometry(curve,110,.048,12,false),makeGlass(.57));outer.castShadow=false;outer.renderOrder=3;
+  const center=addMesh(root,new THREE.TubeGeometry(curve,110,.019,8,false),new THREE.MeshBasicMaterial({color:0xb9ebf8,transparent:true,opacity:.23,depthWrite:false}),[0,0,0]);center.castShadow=false;center.userData.skipPicking=true;center.renderOrder=4;
+  root.userData.tubeMesh=outer;root.userData.tubeHighlight=center;root.userData.tubeCurve=curve;break;
+ }
+ case 'trough':{
+  const w=1.85,d=1.35,h=.65;
+  const acrylic=makeGlass(.35);
+  const base=addMesh(root,new THREE.BoxGeometry(w,.07,d),mat(0x7b9ba6,.21,.48),[0,.065,0]);base.castShadow=false;
+  for(const z of [-d/2+.04,d/2-.04]){const wall=addMesh(root,new THREE.BoxGeometry(w,.67,.045),acrylic,[0,.41,z]);wall.castShadow=false;}
+  for(const x of [-w/2+.04,w/2-.04]){const wall=addMesh(root,new THREE.BoxGeometry(.045,.67,d),acrylic,[x,.41,0]);wall.castShadow=false;}
+  const edge=mat(0xb0d2de,.22,.55);
+  for(const z of [-d/2,d/2]){const stripe=addMesh(root,new THREE.BoxGeometry(w,.025,.025),edge,[0,.745,z]);stripe.castShadow=false;}
+  for(const x of [-w/2,w/2]){const stripe=addMesh(root,new THREE.BoxGeometry(.025,.025,d),edge,[x,.745,0]);stripe.castShadow=false;}
+  const waterBody=addMesh(root,new THREE.BoxGeometry(w-.11,.31,d-.11),makeLiquidMaterial(0x2286b6,.20),[0,.32,0]);waterBody.castShadow=false;waterBody.userData.skipPicking=true;
+  addLiquidSurface(root,w-.11,d-.11,.482);break;
+ }
+ case 'gasJar':{
+  const h=1.42,r=.34;
+  const cylinder=addMesh(root,new THREE.CylinderGeometry(r,r,h,48,1,true),makeGlass(.35),[0,1.12,0]);cylinder.castShadow=false;
+  for(const y of [.41,1.83]){const lip=addMesh(root,new THREE.TorusGeometry(r,.022,12,48),makeGlass(.62),[0,y,0],[Math.PI/2,0,0]);lip.castShadow=false;}
+  // 排水法收集气体：倒置时封闭端朝上，开口端伸入水槽。
+  const closedEnd=addMesh(root,new THREE.CircleGeometry(r-.012,48),makeGlass(.47),[0,1.83,0],[-Math.PI/2,0,0]);closedEnd.castShadow=false;closedEnd.userData.skipPicking=true;
+  const shine=addMesh(root,new THREE.CylinderGeometry(r+.003,r+.003,h-.09,48,1,true,.5,.15),makeGlassHighlight(.29),[0,1.12,0]);shine.castShadow=false;shine.userData.skipPicking=true;
+  const water=addMesh(root,new THREE.CylinderGeometry(r-.04,r-.04,1.34,48),makeLiquidMaterial(0x218fbb,.34),[0,1.09,0]);water.castShadow=false;
+  root.userData.jarWater=water;root.userData.jarWaterBase=1.34;
+  const meniscus=addMesh(root,new THREE.CircleGeometry(r-.047,48),makeLiquidMaterial(0x54c4e6,.64),[0,1.76,0],[-Math.PI/2,0,0]);meniscus.castShadow=false;meniscus.userData.skipPicking=true;meniscus.renderOrder=3;
+  const rim=addMesh(root,new THREE.TorusGeometry(r-.047,.012,8,48),new THREE.MeshBasicMaterial({color:0xc5f7ff,transparent:true,opacity:.33,depthWrite:false}),[0,1.76,0],[Math.PI/2,0,0]);rim.castShadow=false;rim.userData.skipPicking=true;
+  root.userData.jarMeniscus=meniscus;root.userData.jarMeniscusRim=rim;break;
+ }
+ case 'cotton':{
+  [[0,0,0],[.09,.02,.04],[-.08,.04,.02],[.03,.08,-.06],[-.05,-.02,-.05]].forEach((p,i)=>addMesh(root,new THREE.SphereGeometry(.083+(i%2)*.018,18,12),white,p));break;
+ }
+ case 'glassPlate':{
+  const plate=addMesh(root,new THREE.BoxGeometry(.72,.024,.58),makeGlass(.50),[0,.04,0]);plate.castShadow=false;
+  const stripe=addMesh(root,new THREE.BoxGeometry(.61,.005,.018),makeGlassHighlight(.39),[0,.055,-.20]);stripe.castShadow=false;stripe.userData.skipPicking=true;break;
+ }
+ case 'splint':{
+  addMesh(root,new THREE.CylinderGeometry(.035,.035,.9,8),mat(0xc89c62,.86),[0,.48,0]);
+  const spark=addMesh(root,new THREE.SphereGeometry(.07,12,8),new THREE.MeshBasicMaterial({color:0xffb84d}),[0,.035,0]);root.userData.spark=spark;break;
+ }
+ case 'spoon':{
+  addMesh(root,new THREE.CylinderGeometry(.025,.025,.65,10),metal,[0,.32,0],[0,0,Math.PI/2]);
+  addMesh(root,new THREE.SphereGeometry(.11,14,10),metal,[.38,.32,0],[Math.PI/2,0,0]);break;
+ }
+ case 'clamp':{
+  addMesh(root,new THREE.BoxGeometry(.52,.09,.12),metal,[0,0,0]);
+  addMesh(root,new THREE.BoxGeometry(.08,.34,.12),metal,[-.2,.18,0]);
+  addMesh(root,new THREE.BoxGeometry(.08,.34,.12),metal,[.2,.18,0]);break;
+ }
+ }
+ const label=makeLabel(root.userData.name);
+ label.position.set(type==='alcoholLamp'?.47:0,type==='testTube'?1.0:type==='gasJar'?2.15:type==='stand'?2.8:type==='deliveryTube'?1.45:type==='alcoholLamp'?1.94:1.25,0);
+ label.scale.set(1.15,.3,1);root.add(label);root.userData.label=label;
+ return root;
+}
+
+// Alcohol lamp flame: cross-plane procedural flow + soft emissive halo.
+// No photo textures, media, extra CDN packages or particle-system dependencies.
+function flameShader(layer){
+ return new THREE.ShaderMaterial({
+  uniforms:{uTime:{value:0},uLayer:{value:layer}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`
+   precision highp float;
+   varying vec2 vUv;
+   uniform float uTime;
+   uniform float uLayer;
+   float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+   float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}
+   void main(){
+    float y=vUv.y;
+    float n=noise(vec2(y*4.6+uLayer*1.8,uTime*1.75));
+    float n2=noise(vec2(y*10.5-uTime*1.25,uTime*1.18+uLayer));
+    float drift=0.036*sin(y*9.2+uTime*2.8+uLayer*1.4)+0.025*(n-.5);
+    float x=abs(vUv.x-.5-drift*y);
+    // Broad shoulder at the base, slender fluttering tip.
+    float width=(0.35*pow(max(0.,1.-y),.8)+0.017)*(0.92+0.12*n2);
+    if(uLayer>.5)width*=0.68;
+    float mask=1.-smoothstep(width*.58,width*1.05,x);
+    float foot=smoothstep(0.,.10,y),tip=1.-smoothstep(.82,1.0,y);
+    float flicker=0.91+0.09*sin(uTime*13.0+y*17.0+uLayer);
+    float alpha=mask*foot*tip*flicker;
+    vec3 deep=vec3(.07,.32,.98);
+    vec3 blue=vec3(.17,.64,1.0);
+    vec3 pale=vec3(.67,.93,1.0);
+    vec3 white=vec3(.89,.96,1.0);
+    vec3 color=mix(deep,blue,smoothstep(.05,.55,y));
+    color=mix(color,pale,0.45*smoothstep(.32,.65,y));
+    color=mix(color,white,0.75*(1.-smoothstep(.05,.30,y))*(1.0-smoothstep(0.0,width,x)));
+    // Dark-blue inner zone distinguishes the two main flame regions.
+    if(uLayer>.5){color=mix(vec3(.03,.16,.49),vec3(.20,.65,1.0),smoothstep(.12,.72,y));alpha*=.87;}
+    // Wispy uneven edges, without rasterized or hard cone triangles.
+    alpha*=.78+.22*noise(vec2(y*16.0,uTime*3.1+x*12.0));
+    alpha*=uLayer>.5?.52:.42;
+    if(alpha<.012)discard;
+    gl_FragColor=vec4(color,alpha);
+   }`,
+  transparent:true,side:THREE.DoubleSide,depthWrite:false,depthTest:true,
+  blending:THREE.AdditiveBlending
+ });
+}
+function makeGlowTexture(){
+ const c=document.createElement('canvas');c.width=c.height=128;
+ const x=c.getContext('2d'),g=x.createRadialGradient(64,64,1,64,64,63);
+ g.addColorStop(0,'rgba(195,240,255,0.64)');g.addColorStop(.22,'rgba(70,174,255,0.34)');g.addColorStop(.54,'rgba(24,100,236,0.10)');g.addColorStop(1,'rgba(15,79,214,0)');
+ x.fillStyle=g;x.fillRect(0,0,128,128);
+ return new THREE.CanvasTexture(c);
+}
+let flameGlowTexture=null;
+function makeAlcoholFlame(){
+ const f=new THREE.Group();f.position.set(0,.83,0);
+ const outerGeo=new THREE.PlaneGeometry(.56,.83,1,1);
+ const coreGeo=new THREE.PlaneGeometry(.29,.51,1,1);
+ const outer=flameShader(0.0),inner=flameShader(1.0);
+ for(let i=0;i<3;i++){
+  const p=new THREE.Mesh(outerGeo,outer);p.position.y=.37;p.rotation.y=i*Math.PI/3;p.renderOrder=10;p.userData.skipPicking=true;f.add(p);
+ }
+ for(let i=0;i<2;i++){
+  const p=new THREE.Mesh(coreGeo,inner);p.position.y=.245;p.rotation.y=i*Math.PI/2+.32;p.renderOrder=11;p.userData.skipPicking=true;f.add(p);
+ }
+ if(!flameGlowTexture)flameGlowTexture=makeGlowTexture();
+ const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:flameGlowTexture,color:0x6bbaff,transparent:true,opacity:.34,depthWrite:false,blending:THREE.AdditiveBlending}));
+ glow.position.y=.35;glow.scale.set(.78,1.32,1);glow.userData.skipPicking=true;f.add(glow);
+ const ember=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),new THREE.MeshBasicMaterial({color:0xe5faff,transparent:true,opacity:.94}));
+ ember.position.y=.052;ember.userData.skipPicking=true;f.add(ember);
+ const light=new THREE.PointLight(0x5dbeff,0.95,2.65,2);light.position.y=.42;f.add(light);
+ f.userData.outerShader=outer;f.userData.innerShader=inner;
+ f.userData.glow=glow;f.userData.illumination=light;
+ return f;
+}
+
+function makeLabel(text){const c=document.createElement('canvas');c.width=256;c.height=64;const ctx=c.getContext('2d');ctx.fillStyle='rgba(5,18,29,.75)';roundRect(ctx,3,5,250,54,14);ctx.fill();ctx.strokeStyle='rgba(112,209,224,.5)';ctx.lineWidth=2;roundRect(ctx,3,5,250,54,14);ctx.stroke();ctx.fillStyle='#d9f7ff';ctx.font='bold 25px Microsoft YaHei, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,128,33);const tex=new THREE.CanvasTexture(c);tex.encoding=THREE.sRGBEncoding;const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));return sprite;}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function addItem(type,position){if(reactionState!=='idle'){showToast('本轮实验已开始或结束，请先重置后再调整器材');return null;}invalidateSetup();const root=createItem(type);const base=defaultPositions[type]||[0,TABLE_Y,0];const count=getItems(type).length;const p=position?[position[0],base[1],position[2]]:[base[0]+count*.28,base[1],base[2]+count*.22];root.position.set(p[0],p[1],p[2]);if(type==='testTube')setStandardTubeTilt(root);if(type==='clamp')root.rotation.z=0;scene.add(root);items.push(root);if(type==='gasJar'&&!jarWater){jarWater=root.userData.jarWater;}if(type==='alcoholLamp'&&!flame)flame=root.userData.flame;updateBubbleCurve();selectItem(root);showToast((equipment.find(e=>e.type===type)?.name||'器材')+' 已放置');refreshAssemblyFeedback();return root;}
+function getItems(type){return items.filter(i=>i.userData.type===type);}
+function first(type){return getItems(type)[0]||null;}
+function clearItems(){clearJarBubbles();flamePreviewEnabled=false;refreshFlamePreviewButton();if(selected&&selected.userData.selectionRing)scene.remove(selected.userData.selectionRing);items.forEach(i=>scene.remove(i));items=[];selected=null;jarWater=null;flame=null;bubbleCurve=null;solidPieces=[];gasBubbles.forEach(b=>scene.remove(b));gasBubbles=[];jarRemoved=false;$('selectionTools').classList.remove('show');$('rotationPanel').classList.remove('show');updateTubeTiltBadge();}
+function loadDemo(){flamePreviewEnabled=false;refreshFlamePreviewButton();if(reactionState!=='idle'){showToast('请先重置当前实验，再布置示范装置');return;}clearItems();Object.keys(defaultPositions).forEach(type=>{if(type==='spoon'||type==='clamp')return;const root=createItem(type);const p=defaultPositions[type];root.position.set(...p);if(type==='testTube')setStandardTubeTilt(root);scene.add(root);items.push(root);if(type==='gasJar'&&!jarWater)jarWater=root.userData.jarWater;if(type==='alcoholLamp'&&!flame)flame=root.userData.flame;});updateBubbleCurve();demoLoaded=true;assemblyOK=false;airOK=false;drugLoaded=false;jarRemoved=false;tubeRemoved=false;oxygenTested=false;reactionProgress=0;reactionState='idle';reactionFailed=false;reactionElapsed=0;observationIndex=-1;completedSteps.clear();score=0;selectItem(first('testTube'));updateUI();updateReactionMonitor(true);recordEvent('一键布置示范装置');refreshAssemblyFeedback();showToast('示范装置已布置：各项检查应为绿色，可点击「检查装置」继续');}
+function setCamera(){if(!camera)return;const target=new THREE.Vector3(0,1.45,0);const x=target.x+cameraRadius*Math.sin(cameraPhi)*Math.sin(cameraTheta);const y=target.y+cameraRadius*Math.cos(cameraPhi);const z=target.z+cameraRadius*Math.sin(cameraPhi)*Math.cos(cameraTheta);camera.position.set(x,y,z);camera.lookAt(target);syncOrbitControls();}
+function normalizeDegrees(deg){return ((deg%360)+360)%360;}
+function radiansToDegrees360(rad){return Math.round(normalizeDegrees(rad*180/Math.PI));}
+function syncOrbitControls(){if(!$('orbitAzimuth'))return;const az=Math.round(normalizeDegrees(cameraTheta*180/Math.PI));const el=Math.round(90-cameraPhi*180/Math.PI);$('orbitAzimuth').value=String(az);$('orbitAzimuthValue').textContent=az+'°';$('orbitElevation').value=String(THREE.MathUtils.clamp(el,10,75));$('orbitElevationValue').textContent=THREE.MathUtils.clamp(el,10,75)+'°';}
+// 同一套三维姿态测量同时供实时显示和关卡校验使用，避免显示10°却被拒绝。
+function getTubeInclination(root){
+ if(!root)return NaN;
+ const axis=worldPoint(root,new THREE.Vector3(0,.74,0)).sub(worldPoint(root,new THREE.Vector3(0,-.68,0))).normalize();
+ return THREE.MathUtils.radToDeg(Math.atan2(-axis.y,Math.hypot(axis.x,axis.z)));
+}
+function tubeDownTiltDegrees(root){const a=getTubeInclination(root);return Number.isFinite(a)?Math.round(a):0;}
+function isTubeAngleValid(root){const a=getTubeInclination(root);return Number.isFinite(a)&&a>=5-1e-5&&a<=20+1e-5;}
+function updateTubeTiltBadge(){
+ const tube=first('testTube'),badge=$('tubeTiltBadge');if(!badge)return;
+ badge.classList.remove('ok','bad');
+ if(!tube){badge.textContent='未放置试管 · 推荐向下倾斜约 10°';return;}
+ const a=getTubeInclination(tube),down=a>=0;
+ badge.textContent=(down?'管口下倾 ':'管口上倾 ')+Math.abs(Math.round(a))+'° · '+(isTubeAngleValid(tube)?'✓ 已达标':'需调整（建议约10°）');
+ badge.classList.add(isTubeAngleValid(tube)?'ok':'bad');
+}
+function setStandardTubeTilt(root){if(root&&root.userData.type==='testTube'){root.rotation.set(0,0,-100*Math.PI/180);root.userData.standardTilt=10;}}
+function syncRotationControls(){
+ if(!$('rotationPanel'))return;
+ if(!selected){$('rotationTarget').textContent='当前器材：未选择';$('rotationPanel').classList.remove('show');return;}
+ const type=selected.userData.type,name=equipment.find(e=>e.type===type)?.name||type;
+ $('rotationTarget').textContent='当前器材：'+name+' · 三轴可独立旋转 0–360°';
+ [['x','rotX','rotXValue'],['y','rotY','rotYValue'],['z','rotZ','rotZValue']].forEach(([axis,input,out])=>{const deg=radiansToDegrees360(selected.rotation[axis]);$(input).value=String(deg);$(out).textContent=deg+'°';});
+ const isTube=type==='testTube';$('tubeTiltControl').style.display=isTube?'block':'none';
+ $('alignTubeConnections').style.display=isTube?'':'none';$('confirmTubeAngle').style.display=isTube?'':'none';
+ if(isTube){const tilt=tubeDownTiltDegrees(selected);$('tubeTilt').value=String(THREE.MathUtils.clamp(tilt,0,30));$('tubeTiltValue').textContent=(tilt>=0?'下倾 ':'上倾 ')+Math.abs(tilt)+'°';}
+ updateTubeTiltBadge();
+}
+// 角度小幅微调时保持已连接的塞、棉花和弯曲导管入口同步，避免角度合格后接口突然脱开。
+function moveDeliveryInlet(gasTube,worldDelta){
+ if(!gasTube||!gasTube.userData.tubeCurve||worldDelta.length()<1e-7)return;
+ const localDelta=worldDelta.clone().applyQuaternion(gasTube.getWorldQuaternion(new THREE.Quaternion()).invert());
+ const points=gasTube.userData.tubeCurve.points.map(p=>p.clone());
+ [1,.68,.34,.08].forEach((w,i)=>{if(points[i])points[i].addScaledVector(localDelta,w);});
+ const curve=new THREE.CatmullRomCurve3(points);
+ updateDeliveryTubeMesh(gasTube,curve);
+}
+function syncTubeConnections(tube,oldMouth){
+ if(!tube||!oldMouth)return;
+ const newMouth=worldPoint(tube,new THREE.Vector3(0,.74,0)),delta=newMouth.clone().sub(oldMouth);
+ if(delta.length()<1e-5||delta.length()>.45)return;
+ const stopper=first('stopper'),cotton=first('cotton'),gasTube=first('deliveryTube');
+ if(stopper&&stopper.position.distanceTo(oldMouth)<.42)stopper.position.add(delta);
+ if(cotton&&cotton.position.distanceTo(oldMouth)<.48)cotton.position.add(delta);
+ if(gasTube&&worldPoint(gasTube,gasTube.userData.tubeCurve.points[0]).distanceTo(oldMouth)<.46)moveDeliveryInlet(gasTube,delta);
+}
+function alignTubeConnections(){
+ if(!selected||selected.userData.type!=='testTube'||reactionState!=='idle')return;
+ const tube=selected,mouth=worldPoint(tube,new THREE.Vector3(0,.74,0));
+ const stopper=first('stopper'),cotton=first('cotton'),gasTube=first('deliveryTube');
+ if(stopper)stopper.position.copy(mouth);
+ if(cotton)cotton.position.copy(worldPoint(tube,new THREE.Vector3(0,.64,.03)));
+ if(gasTube){const inlet=worldPoint(gasTube,gasTube.userData.tubeCurve.points[0]);moveDeliveryInlet(gasTube,mouth.clone().sub(inlet));}
+ invalidateSetup();updateBubbleCurve();refreshAssemblyFeedback();showToast('试管口、塞、棉花和导管入口已重新对齐');
+}
+function refreshAssemblyFeedback(){
+ updateTubeTiltBadge();renderAssemblyDiagnostics();
+ if(reactionState!=='idle'||airOK)return;
+ const r=evaluateAssembly();
+ if(r.ok){clearWarning();setStatus('装置已达标','试管倾角与器材连接均已达标。点击「检查装置」确认，然后检查气密性。');}
+ else if(items.length){
+  if($('warningStrip').classList.contains('show'))showWarning(r.msg);
+  setStatus('装置待确认',r.msg);
+ }
+}
+function applySelectedRotation(axis,deg){
+ if(!selected||reactionState!=='idle'||!['x','y','z'].includes(axis))return;
+ const tube=selected.userData.type==='testTube'?selected:null;
+ const oldMouth=tube?worldPoint(tube,new THREE.Vector3(0,.74,0)):null;
+ selected.rotation[axis]=THREE.MathUtils.degToRad(Number(deg));
+ if(tube)syncTubeConnections(tube,oldMouth);
+ invalidateSetup();syncRotationControls();updateBubbleCurve();refreshAssemblyFeedback();
+}
+function applyTubeTilt(deg){
+ if(!selected||selected.userData.type!=='testTube'||reactionState!=='idle')return;
+ const oldMouth=worldPoint(selected,new THREE.Vector3(0,.74,0));
+ const tilt=THREE.MathUtils.clamp(Number(deg),0,30);
+ // 专用倾角控制以水平朝右、竖直剖面为基准，排除其他欧拉轴造成的歧义。
+ selected.rotation.set(0,0,THREE.MathUtils.degToRad(-(90+tilt)));
+ syncTubeConnections(selected,oldMouth);invalidateSetup();syncRotationControls();updateBubbleCurve();refreshAssemblyFeedback();
+}
+function resetSelectedRotation(){
+ if(!selected||reactionState!=='idle')return;
+ const tube=selected.userData.type==='testTube'?selected:null,oldMouth=tube?worldPoint(tube,new THREE.Vector3(0,.74,0)):null;
+ if(tube){setStandardTubeTilt(tube);syncTubeConnections(tube,oldMouth);}else selected.rotation.set(0,0,0);
+ invalidateSetup();syncRotationControls();updateBubbleCurve();refreshAssemblyFeedback();showToast('已恢复标准角度并重新校验');
+}
+function resize(){if(!renderer||!camera)return;const wrap=$('stageWrap');const w=wrap.clientWidth,h=wrap.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+function screenCoords(clientX,clientY){const r=renderer.domElement.getBoundingClientRect();mouse.x=((clientX-r.left)/r.width)*2-1;mouse.y=-((clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(mouse,camera);}
+function screenToTable(x,y){screenCoords(x,y);const pt=new THREE.Vector3();raycaster.ray.intersectPlane(tablePlane,pt);return [THREE.MathUtils.clamp(pt.x,-4.2,4.2),TABLE_Y,THREE.MathUtils.clamp(pt.z,-2.2,2.2)];}
+function findRoot(obj){let n=obj;while(n&&!n.userData.isLabItem)n=n.parent;return n;}
+function onPointerDown(e){if(e.button===2){cameraDragging=true;lastPointer={x:e.clientX,y:e.clientY};renderer.domElement.setPointerCapture(e.pointerId);return;}if(e.button!==0)return;screenCoords(e.clientX,e.clientY);const targets=[];items.forEach(root=>root.traverse(o=>{if((o.isMesh||o.isSprite)&&!o.userData.skipPicking)targets.push(o);}));const hits=raycaster.intersectObjects(targets,false);if(hits.length){const root=findRoot(hits[0].object);if(root){selectItem(root);if(reactionState==='idle'){dragging=root;dragMoved=false;const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-root.position.y);const hit=new THREE.Vector3();raycaster.ray.intersectPlane(plane,hit);dragOffset.copy(root.position).sub(hit);}renderer.domElement.setPointerCapture(e.pointerId);return;}}selectItem(null);cameraDragging=true;lastPointer={x:e.clientX,y:e.clientY};renderer.domElement.setPointerCapture(e.pointerId);}
+function onPointerMove(e){if(cameraDragging){const dx=e.clientX-lastPointer.x,dy=e.clientY-lastPointer.y;cameraTheta-=dx*.008;cameraPhi=THREE.MathUtils.clamp(cameraPhi+dy*.006,.25,1.42);lastPointer={x:e.clientX,y:e.clientY};setCamera();return;}if(dragging){screenCoords(e.clientX,e.clientY);const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-dragging.position.y);const hit=new THREE.Vector3();if(raycaster.ray.intersectPlane(plane,hit)){const nx=THREE.MathUtils.clamp(hit.x+dragOffset.x,-4.35,4.35),nz=THREE.MathUtils.clamp(hit.z+dragOffset.z,-2.4,2.4);if(Math.abs(nx-dragging.position.x)+Math.abs(nz-dragging.position.z)>.01)dragMoved=true;dragging.position.x=nx;dragging.position.z=nz;}return;}}
+function onPointerUp(e){cameraDragging=false;if(dragging&&dragMoved){const snapped=trySnap(dragging);invalidateSetup();if(snapped)showToast('器材接口已自动对齐');}dragging=null;dragMoved=false;updateBubbleCurve();refreshAssemblyFeedback();}
+
+function onWheel(e){e.preventDefault();cameraRadius=THREE.MathUtils.clamp(cameraRadius+e.deltaY*.008,6,16);setCamera();}
+function selectItem(root){if(selected&&selected.userData.selectionRing){scene.remove(selected.userData.selectionRing);selected.userData.selectionRing=null;}selected=root;if(selected){const ring=new THREE.Mesh(new THREE.RingGeometry(.35,.39,48),new THREE.MeshBasicMaterial({color:0x57d9e7,transparent:true,opacity:.9,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(selected.position.x,TABLE_Y+.025,selected.position.z);scene.add(ring);selected.userData.selectionRing=ring;$('selectionTools').classList.add('show');$('rotationPanel').classList.add('show');syncRotationControls();}else{$('selectionTools').classList.remove('show');$('rotationPanel').classList.remove('show');updateTubeTiltBadge();}}
+function rotateSelected(){if(!selected)return;if(reactionState!=='idle'){showToast('实验进行中不能调整器材');return;}const panel=$('rotationPanel');panel.classList.toggle('show');syncRotationControls();}
+
+function deleteSelected(){if(!selected)return;if(reactionState!=='idle'){showToast('实验进行中不能删除器材');return;}invalidateSetup();const idx=items.indexOf(selected);if(idx>=0)items.splice(idx,1);if(selected.userData.type==='gasJar')jarWater=null;if(selected.userData.type==='alcoholLamp')flame=null;if(selected.userData.selectionRing)scene.remove(selected.userData.selectionRing);scene.remove(selected);selected=null;updateBubbleCurve();$('selectionTools').classList.remove('show');$('rotationPanel').classList.remove('show');updateTubeTiltBadge();updateUI();showToast('已移除器材');}
+function updateSelectionRing(){if(selected&&selected.userData.selectionRing)selected.userData.selectionRing.position.set(selected.position.x,TABLE_Y+.025,selected.position.z);}
+function distanceXZ(a,b){return Math.hypot(a.position.x-b.position.x,a.position.z-b.position.z);}
+function worldPoint(root,local){return root.localToWorld(local.clone());}
+function evaluateAssembly(){
+ if(!window.THREE)return {ok:false,msg:'3D引擎尚未就绪',checks:[]};
+ const req=['stand','testTube','alcoholLamp','stopper','deliveryTube','trough','gasJar','cotton'];
+ const missing=req.filter(t=>!first(t)),checks=[];
+ const add=(label,ok,msg)=>checks.push({label,ok:!!ok,msg});
+ if(missing.length)add('器材齐全',false,'还缺少：'+missing.map(t=>equipment.find(e=>e.type===t).name).join('、')+'。请从左侧器材库补齐。');
+ else add('器材齐全',true,'所有必需器材已放置。');
+ const tube=first('testTube');
+ if(tube){
+  const a=getTubeInclination(tube),ok=isTubeAngleValid(tube);
+  add('试管倾角 '+(a>=0?'↓':'↑')+Math.abs(Math.round(a))+'°',ok,ok?'试管口略向下倾斜，实际倾角已达标。':'试管口应略向下倾斜，建议约 10°（本模拟接受向下 5°–20°）。当前'+(a>=0?'下倾 ':'上倾 ')+Math.abs(Math.round(a))+'°。');
+ }
+ const stand=first('stand'),lamp=first('alcoholLamp'),stopper=first('stopper'),gasTube=first('deliveryTube'),trough=first('trough'),jar=first('gasJar'),cot=first('cotton');
+ const d=(a,b)=>a.distanceTo(b);
+ if(tube&&stand){const point=worldPoint(stand,new THREE.Vector3(1,1.18,0));add('铁架台夹持',d(point,tube.position)<=.55,'试管没有放在铁架台夹持位置。请将试管中部移到铁夹附近。');}
+ if(tube&&lamp){const bottom=worldPoint(tube,new THREE.Vector3(0,-.68,0)),hot=worldPoint(lamp,new THREE.Vector3(0,1.22,0));add('酒精灯受热位置',d(hot,bottom)<=.62,'酒精灯没有对准试管底部的受热部位。请将灯焰移到试管底部下方。');}
+ if(tube&&stopper){const mouth=worldPoint(tube,new THREE.Vector3(0,.74,0));add('塞与试管口',d(stopper.position,mouth)<=.34,'带孔橡胶塞没有与试管口对齐。请点击「对齐试管口连接」或手动调整塞的位置。');}
+ if(stopper&&gasTube){const inlet=worldPoint(gasTube,gasTube.userData.tubeCurve.points[0]);add('导管入口',d(inlet,stopper.position)<=.38,'导气管入口没有插入橡胶塞。请点击「对齐试管口连接」或手动调整导管。');}
+ if(gasTube&&trough){const outlet=worldPoint(gasTube,gasTube.userData.tubeCurve.points[gasTube.userData.tubeCurve.points.length-1]);const ok=Math.abs(outlet.x-trough.position.x)<=.82&&Math.abs(outlet.z-trough.position.z)<=.58&&Math.abs(outlet.y-(trough.position.y+.47))<=.28;add('导管末端入水',ok,'导气管末端没有伸入水槽水面下方。请将导管末端调整到水槽内。');}
+ if(jar&&trough){const xy=Math.abs(jar.position.x-trough.position.x)<=.78&&Math.abs(jar.position.z-trough.position.z)<=.55;add('集气瓶位置',xy,'集气瓶没有放到水槽的合适位置，请将它移动到水槽中。');const h=Math.abs((jar.position.y+.41)-(trough.position.y+.47))<=.22;add('集气瓶瓶口入水',h,'集气瓶瓶口没有浸入水面，请调整集气瓶高度。');}
+ if(tube&&cot){const mouth=worldPoint(tube,new THREE.Vector3(0,.74,0));add('试管口棉花',d(cot.position,mouth)<=.38,'棉花没有放在试管口附近。请点击「对齐试管口连接」或手动调整。');}
+ const firstBad=checks.find(c=>!c.ok);
+ return {ok:!missing.length&&!firstBad,checks,msg:firstBad?firstBad.msg:'装置检查通过：试管实际下倾角、铁架台、热源、塞、导管和集气瓶均符合本模拟的教学检查条件。'};
+}
+function renderAssemblyDiagnostics(){
+ if(!window.THREE)return;
+ if(reactionState!=='idle'){const summary=$('assemblySummary'),next=$('assemblyNext');if(summary)summary.textContent='装置检查已锁定';if(next)next.textContent='实验已进入操作阶段，装置初始检查结果保留；请按右侧步骤继续，收集结束后的器材移动不影响已通过的前置检查。';return;}
+ const r=evaluateAssembly(),list=$('assemblyCheckList'),summary=$('assemblySummary'),next=$('assemblyNext');
+ if(!list)return;
+ list.replaceChildren();
+ r.checks.forEach(c=>{const el=document.createElement('div');el.className='assembly-check '+(c.ok?'pass':'fail');const icon=document.createElement('span');icon.textContent=c.ok?'✓':'!';const label=document.createElement('small');label.textContent=c.label;el.append(icon,label);el.title=c.msg;list.appendChild(el);});
+ const passed=r.checks.filter(c=>c.ok).length;
+ summary.textContent=r.ok?'✓ 全部达标':passed+' / '+r.checks.length+' 项达标';
+ next.textContent=r.ok?'✓ 已符合装置要求。点击「检查装置」，然后点击「检查气密性」继续。':'还需要处理：'+r.msg;
+}
+function invalidateSetup(){if(!assemblyOK&&!airOK&&!drugLoaded)return;clearJarBubbles();const tube=first('testTube');if(tube&&tube.userData.drugCluster){tube.remove(tube.userData.drugCluster);tube.userData.drugCluster=null;tube.userData.drugLoaded=false;}solidPieces=[];assemblyOK=false;airOK=false;drugLoaded=false;completedSteps.clear();score=0;if(jarWater){jarWater.scale.y=1;jarWater.position.y=1.09;}if(flame)flame.visible=false;clearWarning();setStatus('装置已调整，需要重新检查','器材位置或角度发生变化，原有检查结果已失效。请重新检查装置气密性，再加入药品。');updateUI();updateReactionMonitor(true);}
+function markStep(i){completedSteps.add(i);updateUI();}
+function checkAssembly(){const result=evaluateAssembly();assemblyOK=result.ok;recordEvent(result.ok?'装置检查通过':'装置检查未通过：'+result.msg);if(result.ok){markStep(0);score=Math.max(score,20);clearWarning();setStatus('装置检查通过',result.msg);showToast('装置检查通过 ✓');}else{setStatus('装置需要调整',result.msg);showWarning(result.msg);showModal('装置检查未通过',result.msg,'🧩');}updateUI();renderAssemblyDiagnostics();}
+function checkAir(){if(!assemblyOK){const r=evaluateAssembly();if(!r.ok){recordEvent('气密性检查前装置未通过：'+r.msg);setStatus('无法检查气密性',r.msg);showModal('请先完成装置组装',r.msg,'🧩');return;}assemblyOK=true;markStep(0);}airOK=true;markStep(1);score=Math.max(score,35);showAirCheckBubbles();recordEvent('气密性检查通过：导管末端连续冒泡');setStatus('气密性检查通过','虚拟检查动画：用手紧握试管外壁，导管末端连续冒出气泡；松开后可观察导管内水柱变化。该动画为定性示意。真实实验应由教师指导完成。');showToast('导管末端出现连续气泡 · 气密性通过');updateUI();}
+function addDrug(){
+ if(!first('testTube')){showModal('缺少试管','请先放置大试管，再加入高锰酸钾。','🧪');return;}
+ if(!airOK){showModal('先检查气密性','装药前请完成装置组装和气密性检查。','⚠️');return;}
+ if(drugLoaded){showToast('试管中已经加入高锰酸钾');return;}
+ const tube=first('testTube'),cluster=new THREE.Group();
+ // Independent faceted grains: each material has its own color transition.
+ const geo=new THREE.DodecahedronGeometry(1,0);
+ for(let i=0;i<48;i++){
+  const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random())*.112;
+  const base=0x482260+(i%3)*0x050207;
+  const material=new THREE.MeshStandardMaterial({color:base,roughness:.88,metalness:.015});
+  const grain=new THREE.Mesh(geo,material);
+  const radius=.014+Math.random()*.017;
+  grain.scale.set(radius*(.8+Math.random()*.4),radius*(.7+Math.random()*.65),radius*(.9+Math.random()*.45));
+  grain.position.set(Math.cos(a)*r,-.57+Math.random()*.15,Math.sin(a)*r);
+  grain.rotation.set(Math.random()*6,Math.random()*6,Math.random()*6);
+  grain.userData.startColor=material.color.clone();
+  grain.userData.endColor=new THREE.Color(i%5<2?0x292d24:0x4c6441);
+  grain.userData.convertAt=.09+.64*((i*13)%47)/47;
+  grain.userData.origY=grain.position.y;
+  grain.userData.skipPicking=true;
+  cluster.add(grain);solidPieces.push(grain);
+ }
+ tube.add(cluster);tube.userData.drugCluster=cluster;tube.userData.drugLoaded=true;drugLoaded=true;
+ recordEvent('加入高锰酸钾药品');markStep(2);score=Math.max(score,50);
+ setStatus('药品已加入','试管底部出现紫黑色颗粒。准备加热，观察固体渐变、气泡与集气瓶水位。');
+ showToast('已加入高锰酸钾');updateUI();updateReactionMonitor(true);
+}
+function startReaction(){if(reactionState==='running')return;if(!drugLoaded){showModal('尚未加入反应物','请先完成装置组装、气密性检查，并加入高锰酸钾。','🧪');return;}const r=evaluateAssembly();if(!r.ok){assemblyOK=false;airOK=false;const missingTube=!first('deliveryTube')||!first('stopper');if(missingTube){simulateFailure('加热时发生装置没有形成畅通的气体通路，气体无法正常排出，试管内压强持续升高，虚拟场景模拟出现装置破裂。','💥');}else{showModal('装置不符合安全要求',r.msg+' 请调整后重新检查。','⚠️');setStatus('实验暂停',r.msg);}return;}if(!airOK){showModal('请先检查气密性','实验室制取气体前，应先检查装置的气密性。','⚠️');return;}if(!first('cotton')||distanceXZ(first('cotton'),first('stopper'))>.38){showModal('请检查棉花位置','试管口附近应放置一团棉花，避免加热时高锰酸钾粉末进入导管。','⚠️');return;}flamePreviewEnabled=false;refreshFlamePreviewButton();reactionState='running';reactionProgress=0;reactionElapsed=0;observationIndex=-1;jarBubbleTimer=0;bubbleTimer=0;recordEvent('开始加热，高锰酸钾受热分解');updateMicroView();tubeRemoved=false;jarRemoved=false;oxygenTested=false;reactionFailed=false;if(flame)flame.visible=true;score=Math.max(score,65);clearWarning();setStatus('正在加热 · 氧气生成中','高锰酸钾受热分解。观察固体颜色变化、导管中的气泡和集气瓶内水位。');showToast('酒精灯已点燃，反应开始');updateUI();updateReactionMonitor(true);}
+function simulateFailure(reason,icon='⚠️'){recordEvent('虚拟事故：'+reason);reactionFailed=true;reactionState='failed';if(flame)flame.visible=false;const tube=first('testTube');if(tube){tube.traverse(o=>{if(o.isMesh&&o.material&&o.material.color){o.material=o.material.clone();o.material.color.set(0x9a4b54);}});tube.position.x+=.08;setTimeout(()=>{if(tube.parent){tube.rotation.z+=.16;tube.scale.set(.92,.92,.92);}},100);}clearJarBubbles();setStatus('实验发生模拟事故',reason);showWarning(reason);showModal('虚拟实验事故',reason+' 现实实验中必须停止操作并在教师指导下处理。',icon);updateUI();}
+function coverAndRemoveJar(){if(reactionState!=='readyStop'||reactionProgress<1){showModal('氧气尚未收集完成','请等待集气瓶中收集到足量氧气，再进行盖片操作。','🫧');return;}const jar=first('gasJar'),plate=first('glassPlate');if(!plate){showModal('缺少玻璃片','请从左侧器材仓库添加玻璃片，再盖住集气瓶口。','◻️');return;}if(jarRemoved){showToast('集气瓶已经取出');return;}const x=3.55,z=.8;jar.position.set(x,TABLE_Y+1.83,z);jar.rotation.set(Math.PI,0,0);if(jar.userData.label)jar.userData.label.position.set(0,.2,0);const remaining=Math.max(.28,1-.72*reactionProgress);if(jarWater){jarWater.scale.y=remaining;jarWater.position.y=1.83-(1.34*remaining)/2;}plate.position.set(x,TABLE_Y+1.42,z);plate.rotation.set(0,0,0);jarRemoved=true;recordEvent('集气瓶在水下盖片并取出');markStep(4);score=Math.max(score,82);selectItem(jar);setStatus('集气瓶已盖片取出','玻璃片已盖住瓶口，集气瓶已正放在实验台上。接下来用带火星木条检验氧气。');showToast('已盖片并取出集气瓶 ✓');updateUI();}
+function testOxygen(){if(!jarRemoved){showModal('请先取出集气瓶','先在水下用玻璃片盖住集气瓶口，再取出并正放，随后检验氧气。','◻️');return;}const spl=first('splint');if(!spl){showModal('缺少带火星木条','请从左侧器材仓库添加带火星木条，再进行氧气检验。','✨');return;}if(oxygenTested){showToast('已经完成氧气检验');return;}const jar=first('gasJar'),plate=first('glassPlate');if(plate)plate.position.set(4.12,TABLE_Y+.04,1.35);spl.position.set(jar.position.x,TABLE_Y+.47,jar.position.z);spl.rotation.set(0,0,0);if(spl.userData.spark){spl.userData.spark.material=new THREE.MeshBasicMaterial({color:0xfff4ae});spl.userData.spark.scale.setScalar(2.3);}oxygenTested=true;recordEvent('带火星木条检验氧气，木条复燃');markStep(5);score=Math.max(score,90);setStatus('氧气检验成功','带火星木条伸入集气瓶后复燃，说明收集到的气体支持燃烧。氧气具有助燃性，但氧气本身不能燃烧。');showModal('检验成功：这是氧气！','带火星木条在集气瓶中复燃。氧气具有助燃性，但氧气本身不能燃烧。','✨');updateUI();}
+function removeTube(){if(reactionState!=='readyStop'||reactionProgress<1||!jarRemoved){showModal('请先完成集气瓶收集','待氧气收集完成并盖片取出集气瓶后，再将导管移出水面。','ℹ️');return;}if(tubeRemoved){showToast('导管已经移出水面');return;}const gasTube=first('deliveryTube');if(gasTube&&gasTube.userData.tubeMesh&&gasTube.userData.tubeCurve){const pts=gasTube.userData.tubeCurve.points.map(p=>p.clone());pts[pts.length-2].y+=.28;pts[pts.length-1].y+=.58;const curve=new THREE.CatmullRomCurve3(pts);updateDeliveryTubeMesh(gasTube,curve);}tubeRemoved=true;recordEvent('导管移出水面');updateBubbleCurve();markStep(6);score=Math.max(score,95);setStatus('导管已移出水面','导管末端已经抬离水槽。现在可以熄灭酒精灯，避免试管冷却时发生倒吸。');showToast('导管已移出水面 ✓');updateUI();}
+function extinguish(){if(reactionState!=='readyStop'){showModal('实验尚未完成','请先等待氧气收集完成，再按顺序完成后续操作。','ℹ️');return;}if(!oxygenTested){showModal('请先检验氧气','使用带火星木条检验收集到的气体，完成后再结束实验。','✨');return;}if(!tubeRemoved){simulateFailure('还未将导管移出水面就熄灭酒精灯，试管冷却后内部压强减小，水槽中的水可能倒吸进入试管，虚拟场景模拟试管破裂。','💧');return;}if(flame)flame.visible=false;reactionState='complete';recordEvent('按正确顺序熄灭酒精灯，实验完成');markStep(7);updateMicroView();score=100;setStatus('实验完成','操作顺序正确：先盖片取出集气瓶并检验氧气，再将导管移出水面，最后熄灭酒精灯。');showModal('实验完成！','你已完成高锰酸钾制取氧气的虚拟实验。关键操作：查、装、定、点、收、离、熄；收集结束后注意盖片保存气体。','🏆');updateUI();updateReactionMonitor(true);}
+function recordEvent(message){eventLog.push({time:new Date().toLocaleTimeString('zh-CN',{hour12:false}),message});}
+function downloadReport(){
+ const done=stepInfo.map((s,i)=>(completedSteps.has(i)?'☑ ':'☐ ')+(i+1)+'. '+s[0]).join('\n');
+ const warnings=eventLog.filter(e=>/事故|错误|未通过|漏气|倒吸/.test(e.message)).map(e=>e.time+' '+e.message).join('\n')||'无';
+ const log=eventLog.map(e=>e.time+'  '+e.message).join('\n')||'暂无操作记录';
+ const content=[
+  'ChemLab 9 · 九年级化学虚拟实验报告',
+  '实验：高锰酸钾加热制取氧气',
+  '教材：人教版（2024年）九年级上册 · 第二单元',
+  '化学方程式：2KMnO₄  △→ K₂MnO₄ + MnO₂ + O₂↑',
+  '生成物：锰酸钾、二氧化锰、氧气',
+  '实验状态：'+({idle:'尚未开始',running:'反应进行中',readyStop:'待完成结束操作',complete:'已完成',failed:'发生虚拟事故'}[reactionState]||reactionState),
+  '实验评分：'+score+'/100',
+  '完成进度：'+completedSteps.size+'/8',
+  '', '一、步骤完成情况', done,
+  '', '二、关键现象观察',
+  '1. 高锰酸钾为紫黑色固体，受热分解后形成锰酸钾和二氧化锰。',
+  '2. 导管中出现气泡，氧气通过排水法进入集气瓶。',
+  '3. 集气瓶内水位逐渐下降，说明气体正在收集。',
+  '4. 带火星木条伸入集气瓶后复燃，说明氧气具有助燃性。',
+  '', '三、风险与错误记录', warnings,
+  '', '四、操作时间线', log,
+  '', '说明：本报告来自虚拟定性模拟，不代表真实实验测量数据。真实实验必须遵守教材和学校实验室安全规范。'
+ ].join('\n');
+ const blob=new Blob(['\ufeff'+content],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ChemLab9_高锰酸钾制氧实验报告.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);recordEvent('导出实验报告');showToast('实验报告已生成');
+}
+function openMicroView(){ $('microOverlay').classList.add('show');$('microOverlay').setAttribute('aria-hidden','false');$('toggleMicro').classList.add('active');updateMicroView(); }
+function closeMicroView(){ $('microOverlay').classList.remove('show');$('microOverlay').setAttribute('aria-hidden','true');$('toggleMicro').classList.remove('active'); }
+function updateMicroView(){const p=Math.max(0,Math.min(1,reactionProgress));$('microReactants').style.opacity=String(1-p*.82);$('microProducts').style.opacity=String(.18+p*.82);$('microReactants').style.filter='saturate('+Math.max(.25,1-p)+')';$('microProducts').style.filter='saturate('+Math.max(.25,p)+')';$('microProgressText').textContent=Math.round(p*100)+'%';$('microProgressFill').style.width=(p*100)+'%';}
+function showAirCheckBubbles(){const tube=first('deliveryTube');if(!tube||!tube.userData.tubeCurve)return;const end=worldPoint(tube,tube.userData.tubeCurve.points[tube.userData.tubeCurve.points.length-1]);for(let i=0;i<7;i++){const mesh=new THREE.Mesh(new THREE.SphereGeometry(.045+Math.random()*.018,10,8),new THREE.MeshPhysicalMaterial({color:0xb8efff,transparent:true,opacity:.8,roughness:.08}));mesh.position.set(end.x+(Math.random()-.5)*.08,end.y+i*.035,end.z+(Math.random()-.5)*.08);mesh.userData.life=0;mesh.userData.delay=i*.13;scene.add(mesh);airCheckBubbles.push(mesh);}}
+function updateAirCheckBubbles(dt){for(let i=airCheckBubbles.length-1;i>=0;i--){const b=airCheckBubbles[i];b.userData.life+=dt;if(b.userData.life<b.userData.delay){continue;}b.position.y+=dt*.42;b.material.opacity=Math.max(0,.82-(b.userData.life-b.userData.delay)*.65);if(b.userData.life-b.userData.delay>1.25){scene.remove(b);b.geometry.dispose();b.material.dispose();airCheckBubbles.splice(i,1);}}}
+function trySnap(root){if(!root)return false;const type=root.userData.type;let target=null,threshold=.8;
+ if(type==='testTube'&&first('stand')){target=worldPoint(first('stand'),new THREE.Vector3(1,1.18,0));threshold=.9;}
+ else if(type==='stopper'&&first('testTube')){target=worldPoint(first('testTube'),new THREE.Vector3(0,.74,0));threshold=.72;}
+ else if(type==='cotton'&&first('testTube')){target=worldPoint(first('testTube'),new THREE.Vector3(0,.62,.03));threshold=.72;}
+ else if(type==='deliveryTube'&&first('stopper')){const inlet=new THREE.Vector3(-.78,1.02,0).applyEuler(root.rotation);target=first('stopper').position.clone().sub(inlet);threshold=1.05;}
+ else if(type==='trough'&&first('deliveryTube')){const t=first('deliveryTube'),end=worldPoint(t,t.userData.tubeCurve.points[t.userData.tubeCurve.points.length-1]);target=new THREE.Vector3(end.x-.3,TABLE_Y,end.z);threshold=1.0;}
+ else if(type==='gasJar'&&first('trough')){const t=first('trough');target=new THREE.Vector3(t.position.x+.48,TABLE_Y,t.position.z);threshold=.9;}
+ else if(type==='alcoholLamp'&&first('testTube')){const t=first('testTube'),bottom=worldPoint(t,new THREE.Vector3(0,-.68,0));target=new THREE.Vector3(bottom.x,TABLE_Y,bottom.z+.28);threshold=.9;}
+ if(target&&root.position.distanceTo(target)<threshold){root.position.copy(target);if(root.userData.selectionRing)root.userData.selectionRing.position.set(root.position.x,TABLE_Y+.025,root.position.z);return true;}return false;
+}
+function setStatus(state,msg){$('statusState').textContent=state;$('statusMessage').textContent=msg;}
+function showWarning(msg){$('warningStrip').textContent='⚠ '+msg;$('warningStrip').classList.add('show');}
+function clearWarning(){$('warningStrip').classList.remove('show');}
+function showModal(title,text,icon='⚠️'){$('modalTitle').textContent=title;$('modalText').textContent=text;$('modalIcon').textContent=icon;$('modalBackdrop').classList.add('show');}
+function hideModal(){$('modalBackdrop').classList.remove('show');}
+function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2100);}
+function updateUI(){const n=completedSteps.size;$('progressText').textContent=n+' / 8 步';$('progressFill').style.width=(n/8*100)+'%';$('scoreText').textContent=score+' / 100';stepInfo.forEach((s,i)=>{const el=$('step'+i);el.classList.toggle('done',completedSteps.has(i));el.classList.toggle('active',!completedSteps.has(i)&&i===Math.min(n,7));$('stepMark'+i).textContent=completedSteps.has(i)?'✓':'';});$('checkAssembly').disabled=reactionState!=='idle';$('checkAir').disabled=airOK||reactionState!=='idle';$('addDrug').disabled=drugLoaded||reactionState!=='idle';$('startReaction').disabled=reactionState!=='idle'||!drugLoaded;$('coverJar').disabled=!(reactionState==='readyStop'&&!jarRemoved);$('testOxygen').disabled=!jarRemoved||oxygenTested||reactionState!=='readyStop';$('removeTube').disabled=!jarRemoved||tubeRemoved||reactionState!=='readyStop';$('extinguish').disabled=!(reactionState==='readyStop'&&tubeRemoved&&oxygenTested);renderAssemblyDiagnostics();}
+function updateReaction(dt){
+ if(reactionState==='running'){
+  const simDt=dt*reactionSpeed;
+  reactionElapsed+=simDt;
+  reactionProgress=Math.min(1,reactionProgress+simDt/24);
+  if(reactionProgress>=1){reactionState='readyStop';markStep(3);score=Math.max(score,75);setStatus('氧气收集阶段完成','集气瓶中已收集到足量氧气。接下来在水下盖上玻璃片并取出集气瓶。');showToast('氧气收集完成');updateUI();}
+  const tube=first('testTube');
+  if(tube&&tube.userData.drugCluster){
+   tube.userData.drugCluster.children.forEach((grain,i)=>{
+    const q=THREE.MathUtils.smoothstep(reactionProgress,grain.userData.convertAt,Math.min(1,grain.userData.convertAt+.24));
+    grain.material.color.copy(grain.userData.startColor).lerp(grain.userData.endColor,q);
+    grain.position.y=grain.userData.origY+Math.sin(reactionElapsed*4.6+i*2.7)*.003*(.4+q);
+    grain.scale.y=grain.scale.x*(1-.15*q);
+   });
+  }
+  if(jarWater&&!jarRemoved){const f=1-.72*reactionProgress;jarWater.scale.y=f;jarWater.position.y=.41+(1.34*f)/2;}
+  updateMicroView();
+  if(reactionProgress>=.12){
+   bubbleTimer+=simDt;
+   if(bubbleTimer>.20){bubbleTimer=0;spawnBubble();}
+   jarBubbleTimer+=simDt;
+   if(jarBubbleTimer>.11){jarBubbleTimer=0;spawnJarBubble();}
+  }
+  if(observationIndex<reactionObservations.length-1&&reactionProgress>=reactionObservations[observationIndex+1].at){
+   observationIndex++;
+   if(observationIndex>0)recordEvent('实验现象：'+reactionObservations[observationIndex].message);
+   updateReactionMonitor(true);
+  }
+ }
+ for(let i=gasBubbles.length-1;i>=0;i--){
+  const b=gasBubbles[i];b.userData.t+=dt*reactionSpeed*(.28+reactionProgress*.2);
+  const t=b.userData.t;
+  if(t>=1){scene.remove(b);b.geometry.dispose();b.material.dispose();gasBubbles.splice(i,1);}
+  else if(bubbleCurve){const p=bubbleCurve.getPoint(t);b.position.copy(p);if(t>.84)b.position.y+=Math.sin((t-.84)*Math.PI*5)*.07;}
+ }
+ updateJarBubbles(dt*reactionSpeed);
+ monitorUpdateTimer+=dt;
+ if(monitorUpdateTimer>=.12){monitorUpdateTimer=0;updateReactionMonitor(false);}
+ if(reactionState==='complete'&&flame)flame.visible=false;
+}
+function updateReactionMonitor(force=false){
+ const panel=$('reactionMonitor');if(!panel)return;
+ const active=reactionState==='running',p=Math.max(0,Math.min(1,reactionProgress)),pct=Math.round(p*100);
+ panel.classList.toggle('running',active);
+ const phase=active?(reactionObservations[Math.max(0,observationIndex)]?.phase||'开始受热'):
+  reactionState==='readyStop'?'已收集':reactionState==='complete'?'实验完成':reactionState==='failed'?'模拟事故':drugLoaded?'待加热':'准备中';
+ const mins=Math.floor(reactionElapsed/60).toString().padStart(2,'0');
+ const secs=Math.floor(reactionElapsed%60).toString().padStart(2,'0');
+ $('reactionElapsedText').textContent=mins+':'+secs;
+ $('reactionGasText').textContent=pct+'%';
+ $('reactionGasFill').style.width=pct+'%';
+ $('reactionGasGauge').setAttribute('aria-valuenow',String(pct));
+ $('reactionMonitorPhase').textContent=phase;
+ const observation=active?reactionObservations[Math.max(0,observationIndex)]?.message:
+  reactionState==='readyStop'?'已结束加热演示。气体收集量为示意进度；下一步盖片并取出集气瓶。':
+  reactionState==='complete'?'实验操作已结束。先移出导管、后熄灭酒精灯，能防止倒吸。':
+  reactionState==='failed'?'模拟危险事件：检查右侧警告，并重新布置安全装置。':
+  drugLoaded?'紫黑色固体已加入试管，待检查完毕后开始加热。':
+  '装置就绪后，检查气密性并加入高锰酸钾；加热时观察固体、气泡和瓶内水位的同步变化。';
+ const desc=$('reactionObservation');if(desc.textContent!==observation||force)desc.textContent=observation;
+}
+function cycleReactionSpeed(){
+ const speeds=[1,2,.5],idx=speeds.indexOf(reactionSpeed);
+ reactionSpeed=speeds[(idx+1)%speeds.length];
+ $('reactionSpeed').textContent='⏱ '+reactionSpeed+'× 演示速度';
+ $('reactionSpeed').setAttribute('aria-label','演示速度 '+reactionSpeed+'倍');
+ showToast('虚拟动画播放速度 '+reactionSpeed+'×；不代表实际反应速率');
+}
+function clearJarBubbles(){
+ for(const b of jarBubbles){b.parent?.remove(b);b.geometry.dispose();b.material.dispose();}
+ jarBubbles=[];jarBubbleTimer=0;
+}
+function spawnJarBubble(){
+ const jar=first('gasJar');if(!jar||jarRemoved||jarBubbles.length>=42)return;
+ const m=new THREE.Mesh(new THREE.SphereGeometry(.022+Math.random()*.018,10,8),
+  new THREE.MeshPhysicalMaterial({color:0xb5edff,roughness:.05,transparent:true,opacity:.53,depthWrite:false}));
+ const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random())*.22;
+ m.position.set(Math.cos(a)*r,.43+Math.random()*.10,Math.sin(a)*r);
+ m.userData.rise=.32+Math.random()*.25;
+ m.userData.x=m.position.x;m.userData.z=m.position.z;
+ m.userData.phase=Math.random()*Math.PI*2;m.userData.age=0;
+ m.userData.skipPicking=true;
+ jar.add(m);jarBubbles.push(m);
+}
+function updateJarBubbles(dt){
+ if(!jarBubbles.length)return;
+ const jar=first('gasJar');
+ const water=jar?.userData.jarWater;
+ const surface=water?(water.position.y+jar.userData.jarWaterBase*.5*water.scale.y):1.76;
+ for(let i=jarBubbles.length-1;i>=0;i--){
+  const b=jarBubbles[i];b.userData.age+=dt;
+  b.position.y+=b.userData.rise*dt;
+  b.position.x=b.userData.x+Math.sin(b.userData.age*3.7+b.userData.phase)*.018;
+  b.position.z=b.userData.z+Math.cos(b.userData.age*2.9+b.userData.phase)*.017;
+  b.scale.setScalar(1+Math.min(.6,b.userData.age*.12));
+  if(b.position.y>surface-.035||!jar||jarRemoved||reactionState==='failed'){
+   b.parent?.remove(b);b.geometry.dispose();b.material.dispose();jarBubbles.splice(i,1);
+  }
+ }
+}
+function spawnBubble(){if(!bubbleCurve||gasBubbles.length>=32)return;const m=new THREE.Mesh(new THREE.SphereGeometry(.045+Math.random()*.018,10,8),new THREE.MeshPhysicalMaterial({color:0xb8efff,transparent:true,opacity:.78,roughness:.08,metalness:.05}));m.userData.t=0;scene.add(m);gasBubbles.push(m);}
+function updateLiquidEffects(t){
+ for(const root of getItems('trough')){
+  const water=root.userData.waveSurface;if(!water)continue;
+  const position=water.geometry.attributes.position;
+  // Oscillate in-plane vertices along the surface normal (mesh local Z).
+  if(qualityHigh){
+   for(let i=0;i<position.count;i++){
+    const x=position.getX(i),y=position.getY(i);
+    const z=.008*Math.sin(8*x+3.2*t)*Math.cos(7*y-2.2*t)+.006*Math.sin(12*(x+y)-4.6*t);
+    position.setZ(i,z);
+   }
+   position.needsUpdate=true;
+  }
+ }
+ for(const root of getItems('gasJar')){
+  const water=root.userData.jarWater;
+  if(!water)continue;
+  const level=water.position.y+root.userData.jarWaterBase*.5*water.scale.y;
+  const surface=root.userData.jarMeniscus,rim=root.userData.jarMeniscusRim;
+  if(surface){surface.position.y=level;surface.rotation.z=.005*Math.sin(t*2.8);}
+  if(rim)rim.position.y=level;
+ }
+}
+function updateBubbleCurve(){const t=first('deliveryTube');if(t&&t.userData.tubeCurve){const curve=t.userData.tubeCurve;const points=curve.points.map(p=>worldPoint(t,p));bubbleCurve=new THREE.CatmullRomCurve3(points);}else{bubbleCurve=null;}}
+function refreshFlamePreviewButton(){
+ const b=$('previewFlame');if(!b)return;
+ b.classList.toggle('active',flamePreviewEnabled);
+ b.setAttribute('aria-pressed',String(flamePreviewEnabled));
+ b.innerHTML=flamePreviewEnabled?'<span class="flame-glyph">✦</span> 关闭预览':'<span class="flame-glyph">✦</span> 预览火焰';
+}
+function toggleFlamePreview(){
+ if(reactionState!=='idle'){showToast('实验加热期间火焰自动显示，无需预览');return;}
+ if(!first('alcoholLamp')){showToast('请先放置酒精灯，或一键布置示范装置');return;}
+ flamePreviewEnabled=!flamePreviewEnabled;refreshFlamePreviewButton();
+ showToast(flamePreviewEnabled?'酒精灯火焰预览已开启（不会推进实验步骤）':'火焰预览已关闭');
+}
+let qualityHigh=true;
+function setVisualQuality(high){
+ qualityHigh=Boolean(high);if(renderer){renderer.setPixelRatio(Math.min(devicePixelRatio||1,qualityHigh?2:1));renderer.shadowMap.enabled=qualityHigh;resize();}
+ if(!qualityHigh){getItems('trough').forEach(root=>{const geo=root.userData.waveSurface?.geometry;const pos=geo?.attributes?.position;if(pos){for(let i=0;i<pos.count;i++)pos.setZ(i,0);pos.needsUpdate=true;}});}
+ const btn=$('qualitySwitch');if(btn){btn.setAttribute('aria-pressed',String(qualityHigh));btn.textContent=qualityHigh?'◇ 精细画质':'◇ 流畅模式';}
+ showToast(qualityHigh?'已开启精细画质与动态水面':'已切换为流畅模式，降低渲染负载');
+}
+function updateFlameEffects(t){
+ const litByExperiment=reactionState==='running'||reactionState==='readyStop';
+ const show=litByExperiment||(reactionState==='idle'&&flamePreviewEnabled);
+ const activeLamp=first('alcoholLamp');
+ for(const lamp of getItems('alcoholLamp')){
+  const f=lamp.userData.flame;if(!f)continue;
+  const active=show&&lamp===activeLamp;f.visible=active;if(!active)continue;
+  const wave=Math.sin(t*13.0)+.42*Math.sin(t*18.7+1.7);
+  f.scale.set(1+.035*wave,1+.057*wave,1+.025*wave);
+  f.userData.outerShader.uniforms.uTime.value=t;
+  f.userData.innerShader.uniforms.uTime.value=t;
+  f.userData.illumination.intensity=.87+.14*wave;
+  f.userData.glow.material.opacity=.31+.046*wave;
+ }
+ const hud=$('flameHud');if(hud){
+  const active=show&&!!activeLamp;hud.classList.toggle('show',active);
+  $('flameHudTitle').textContent=litByExperiment?'正在加热 · 酒精灯已点燃':'酒精灯 · 火焰效果预览';
+  $('flameHudDesc').textContent=litByExperiment?'观察蓝色外焰、内焰与温和照明':'仅演示视觉效果，不影响气密性与实验评分';
+ }
+}
+function animate(){requestAnimationFrame(animate);if(!renderer)return;
+ const dt=Math.min(clock.getDelta(),.05);updateReaction(dt);updateAirCheckBubbles(dt);updateSelectionRing();
+ const visualT=performance.now()/1000;updateFlameEffects(visualT);updateLiquidEffects(visualT);
+ renderer.render(scene,camera);
+}
+function bindUI(){document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeTab=b.dataset.tab;buildInventory();}));document.querySelectorAll('.cat').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeCat=b.dataset.cat;buildInventory();}));$('searchInput').addEventListener('input',e=>{searchTerm=e.target.value;buildInventory();});
+ $('openEquationLibrary').addEventListener('click',openEquationLibrary);$('downloadReport').addEventListener('click',downloadReport);$('toggleMicro').addEventListener('click',()=>{if($('microOverlay').classList.contains('show'))closeMicroView();else openMicroView();});$('closeMicro').addEventListener('click',closeMicroView);$('closeEquationLibrary').addEventListener('click',closeEquationLibrary);$('equationBackdrop').addEventListener('click',e=>{if(e.target===$('equationBackdrop'))closeEquationLibrary();});$('equationSearch').addEventListener('input',e=>{equationSearch=e.target.value;buildEquationLibrary();});$('equationList').addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(b)launchLibraryExperiment(b.dataset.run);});$('reactionSpeed').addEventListener('click',cycleReactionSpeed);$('previewFlame').addEventListener('click',toggleFlamePreview);$('qualitySwitch').addEventListener('click',()=>setVisualQuality(!qualityHigh));$('loadDemo').addEventListener('click',loadDemo);$('checkAssembly').addEventListener('click',checkAssembly);$('checkAir').addEventListener('click',checkAir);$('addDrug').addEventListener('click',addDrug);$('startReaction').addEventListener('click',startReaction);$('coverJar').addEventListener('click',coverAndRemoveJar);$('testOxygen').addEventListener('click',testOxygen);$('removeTube').addEventListener('click',removeTube);$('extinguish').addEventListener('click',extinguish);$('rotateItem').addEventListener('click',rotateSelected);$('deleteItem').addEventListener('click',deleteSelected);$('orbitToggle').addEventListener('click',()=>{$('orbitPanel').classList.toggle('show');syncOrbitControls();});$('closeOrbit').addEventListener('click',()=>$('orbitPanel').classList.remove('show'));$('orbitAzimuth').addEventListener('input',e=>{cameraTheta=THREE.MathUtils.degToRad(Number(e.target.value));setCamera();});$('orbitElevation').addEventListener('input',e=>{cameraPhi=THREE.MathUtils.degToRad(90-Number(e.target.value));setCamera();});$('closeRotation').addEventListener('click',()=>$('rotationPanel').classList.remove('show'));$('rotX').addEventListener('input',e=>applySelectedRotation('x',e.target.value));$('rotY').addEventListener('input',e=>applySelectedRotation('y',e.target.value));$('rotZ').addEventListener('input',e=>applySelectedRotation('z',e.target.value));$('tubeTilt').addEventListener('input',e=>applyTubeTilt(e.target.value));$('rotationReset').addEventListener('click',resetSelectedRotation);$('alignTubeConnections').addEventListener('click',alignTubeConnections);$('confirmTubeAngle').addEventListener('click',()=>{checkAssembly();if(assemblyOK)$('rotationPanel').classList.remove('show');});$('cameraHome').addEventListener('click',()=>{cameraTheta=.55;cameraPhi=1.05;cameraRadius=10;setCamera();});$('zoomIn').addEventListener('click',()=>{cameraRadius=Math.max(6,cameraRadius-1);setCamera();});$('zoomOut').addEventListener('click',()=>{cameraRadius=Math.min(16,cameraRadius+1);setCamera();});$('modalClose').addEventListener('click',hideModal);$('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))hideModal();});$('resetAll').addEventListener('click',resetAll);
+ window.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='r'&&selected)rotateSelected();if((e.key==='Delete'||e.key==='Backspace')&&selected)deleteSelected();if(e.key==='Escape'){selectItem(null);hideModal();}});
+}
+function resetAll(){flamePreviewEnabled=false;refreshFlamePreviewButton();clearItems();airCheckBubbles.forEach(b=>{scene.remove(b);b.geometry.dispose();b.material.dispose();});airCheckBubbles=[];eventLog=[];recordEvent('重置实验');closeMicroView();reactionState='idle';reactionProgress=0;reactionElapsed=0;observationIndex=-1;gasBubbles=[];bubbleTimer=0;solidPieces=[];demoLoaded=false;assemblyOK=false;airOK=false;drugLoaded=false;jarRemoved=false;tubeRemoved=false;oxygenTested=false;reactionFailed=false;completedSteps.clear();score=0;clearWarning();setStatus('等待组装','从左侧器材仓库选择仪器，搭建氧气发生与收集装置。');updateUI();updateTubeTiltBadge();updateReactionMonitor(true);if(!window.THREE)disable3DControls();showToast('实验已重置');}
+init();
+})();
+</script>
+</body>
+</html>
